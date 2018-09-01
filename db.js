@@ -1,10 +1,10 @@
 let mysql = require('mysql');
 
 let mysql_connection = mysql.createConnection({
-    host: 'https://www.db4free.net/phpMyAdmin/index.php',
-    user: 'node_js',
-    password: 'shishio1',
-    database: 'node_js'
+    host: 'jdbc:mysql://sql3.freemysqlhosting.net:3306/',
+    user: 'sql3254603',
+    password: 'DjZWkTU84u',
+    database: 'sql3254603'
 });
 
 mysql_connection.connect(function (err) {

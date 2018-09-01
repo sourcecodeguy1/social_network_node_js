@@ -1,0 +1,61 @@
+<!--CHECK IF THE USER IS LOGGED IN-->
+<%if(logged_in_user){%>
+<nav class="navbar navbar-inverse navbar-fixed-top app-navbar">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-main">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <img src="../HEADER_DDRGUY_LOGO.png" alt="brand">
+            </a>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-collapse-main">
+
+            <ul class="nav navbar-nav hidden-xs">
+                <li>
+                    <a href="/index">Home</a>
+                </li>
+                <li class="active">
+                    <a href="/profile/<%= u_id%>">Profile</a>
+                </li>
+                <li>
+                    <a data-toggle="modal" href="#msgModal">Messages</a>
+                </li>
+                <li>
+                    <a href="../docs/index.html">Docs</a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right m-r-0 hidden-xs">
+                <li >
+                    <a class="app-notifications" href="../notifications/index.html">
+                        <span class="icon icon-bell"></span>
+                    </a>
+                </li>
+                <li>
+                    <button class="btn btn-default navbar-btn navbar-btn-avitar" data-toggle="popover">
+                        <img class="img-circle" src="../public/users/<%= typeof logged_in_user !== 'undefined' ? logged_in_user : '' %>/profile_picture/<%= typeof user_profile_picture !== 'undefined' ? user_profile_picture : '' %>">
+                    </button>
+                </li>
+            </ul>
+
+            <form class="navbar-form navbar-right app-search" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" data-action="grow" placeholder="Search">
+                </div>
+            </form>
+
+
+            <ul class="nav navbar-nav hidden">
+                <li><a href="/settings">Setting</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<%}%>
+<!--END CHECK IF USER EXISTS-->

@@ -1,0 +1,88 @@
+#top_container{
+    width: 300px;
+    overflow: hidden;
+    float: right;
+}
+#first{
+    float: left;
+    width: 100px;
+}
+#second{
+    overflow: hidden;
+}
+#txt_user_bio{
+    resize: none;
+}
+#profile_picture_wrapper{
+    margin-top: 150px;
+}
+#add_profile_picture_title{
+    cursor: pointer;
+}
+#add_profile_picture_panel, #add_profile_picture_title {
+    padding: 5px;
+    text-align: center;
+    background-color: #e5eecc;
+    border: solid 1px #c3c3c3;
+}
+
+#add_profile_picture_panel {
+
+    display: none;
+}
+#add_profile_picture_panel_title{
+    text-align: center;
+    font-weight: bold;
+}
+#frm_upload_profile_picture{
+    display: inline-block;
+
+}
+#btn_upload_profile_picture{
+   margin-right: 50px;
+}
+/*UPDATE PASSWORD*/
+#frm_update_password{
+
+    margin-left: 480px;
+
+}
+
+#update_password_panel_title{
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+#update_password_title{
+    cursor: pointer;
+}
+#update_password_panel, #update_password_title {
+    padding: 5px;
+    text-align: center;
+    background-color: #e5eecc;
+    border: solid 1px #c3c3c3;
+}
+
+#update_password_panel {
+    height: 270px;
+    display: none;
+}
+/*ADD OR UPDATE BIO*/
+
+#add_update_bio_title{
+    cursor: pointer;
+}
+#add_update_bio_panel, #add_update_bio_title {
+    padding: 5px;
+    text-align: center;
+    background-color: #e5eecc;
+    border: solid 1px #c3c3c3;
+}
+
+#add_update_bio_panel {
+    display: none;
+}
+#user_bio{
+    resize: none;
+    font-weight: bold;
+}

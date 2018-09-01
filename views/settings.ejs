@@ -1,0 +1,123 @@
+<!--ADD TITLE TO FOR THE PAGE-->
+<% var title = "Settings" %>
+
+<!--ADD THE TOP TEMPLATE-->
+<% include ../partials/top.ejs %>
+
+
+<!--ADD THE USER NAVIGATION TEMPLATE-->
+<% include ../partials/user_navigation_template.ejs %>
+
+<!--SETTINGS CONTENT GOES HERE-->
+
+<div class="container"><!--MAIN CONTAINER-->
+
+    <!--PROFILE PICTURE WRAPPER-->
+    <div id="profile_picture_wrapper">
+
+    <div id="add_profile_picture_title"><strong>Add Profile Picture</strong></div>
+    <div id="add_profile_picture_panel">
+
+        <div><%= typeof msg !== 'undefined' ? msg : '' %></div>
+        <form id="frm_upload_profile_picture" action="/upload" method="post" enctype="multipart/form-data">
+
+            <p id="error_pic_upload_handler" class="alert-danger"></p><!--jQuery error handler-->
+            <p id="success_pic_upload_handler" style="background-color: #00AA88; color: white;"></p><!--jQuery success handler-->
+
+            <input type="file" name="file_upload" id="txt_file_upload"><br />
+
+            <button id="btn_upload_profile_picture" type="submit" class="btn btn-primary">Upload Profile Picture</button>
+        </form>
+
+
+
+    </div>
+
+    </div>
+    <!--END OF PROFILE PICTURE WRAPPER-->
+    <br />
+    <!--UPDATE PASSWORD-->
+    <div id="update_password_wrapper">
+
+        <div id="update_password_title"><strong>Update Password</strong></div>
+        <div id="update_password_panel"><br />
+            <form id="" action="#" method="post">
+                <div class="py-5" >
+                        <div class="row">
+
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <p id="error_password_handler" class="alert-danger"></p><!--jQuery error handler-->
+                                <p id="success_password_handler" style="background-color: #00AA88; color: white;"></p><!--jQuery success handler-->
+                                <form class="">
+                                    <div class="form-group">
+                                        <input id="txt_old_password" name="old_password" type="text" class="form-control" placeholder="Enter old password"> </div>
+                                    <div class="form-group">
+                                        <input id="txt_new_password" name="new_password" type="password" class="form-control" placeholder="Enter new password"> </div>
+                                    <div class="form-group">
+                                        <input id="txt_confirm_password" name="confirm_password" type="password" class="form-control" placeholder="Confirm Password"> </div>
+                                    <button type="button" class="btn btn-primary">Update Password</button>
+                                </form>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+
+                </div>
+
+            </form>
+        </div>
+
+    </div><br />
+    <!--END UPDATE PASSWORD WRAPPER-->
+
+    <!--ADD OR UPDATE BIO-->
+
+    <div id="add_update_bio_title"><strong>Add or Update Bio</strong></div>
+    <div id="add_update_bio_panel">
+
+        <form id="frm_add_update_bio" action="/bio_post" method="post"><br />
+            <div class="py-5 w-100">
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <p id="error_bio_handler" class="alert-danger collapse">Error</p><!--jQuery error handler-->
+                            <p id="success_bio_handler" class="collapse" style="background-color: #00AA88; color: white;"></p><!--jQuery success handler-->
+                            <form class="">
+                                <div class="form-group">
+                                    <!--Check if user has entered a bio-->
+                                    <div class="alert-danger"><%= typeof bio_msg !== 'undefined' ? bio_msg : '' %></div><br />
+                                    <% if (bio){%>
+
+                                    <textarea class="form-control" rows="5" id="user_bio" name="user_bio" placeholder="Write a little something about yourself"><%- bio%></textarea>
+
+                                    <%} else{%>
+
+                                    <textarea class="form-control" rows="5" id="user_bio" name="user_bio" placeholder="Write a little something about yourself"></textarea>
+
+                                    <%}%>
+                                </div>
+                                <div class="form-group"></div>
+                                <div class="form-group"></div>
+                                <button id="btnSubmitBio" type="button" class="btn btn-primary">Add or Update Bio</button>
+                            </form>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+            </div>
+        </form>
+    </div>
+
+    <!--END ADD OR UPDATE BIO-->
+
+</div><!--END MAIN CONTAINER-->
+
+<!--END OF SETTING CONTENT-->
+
+<!--ADD SETTINGS' JAVASCRIPT FILE-->
+<script src="../assets/js/settings/settings.js"></script>
+
+<!--ADD BIO JS FILE-->
+<script src="../views/js/bio.js"></script>
+<!--ADD THE FOOTER TEMPLATE-->
+<% include ../partials/bottom.ejs %>
+

@@ -1,0 +1,44 @@
+<% var title = "Login"; %>
+
+<% include ../partials/top.ejs %>
+
+<div class="container-fluid container-fill-height">
+    <div class="container-content-middle">
+
+        <!--LOGO GOES HERE-->
+
+        <div style="margin-bottom: 100px">
+            <img src="../DDRGUY_LOGO.png" alt="Logo" style="margin-left: auto; margin-right: auto; display: block">
+        </div>
+        <!--END OF LOGO CODE-->
+
+        <form action="/login_process" method="post" role="form" class="m-x-auto text-center app-login-form">
+
+            <div class="form-group">
+                <input name="username" class="form-control" placeholder="Username">
+            </div>
+
+            <div class="form-group m-b-md">
+                <input name="password" type="password" class="form-control" placeholder="Password">
+            </div>
+
+            <div class="m-b-lg">
+                <button class="btn btn-primary">Log In</button>
+            </div>
+
+            <footer class="screen-login">
+                <div id="forgot_password">
+                    <a href="#" class="text-muted">Forgot password</a>
+                </div>
+
+                <div id="not_a_member">
+                    <span>Not a member? Register <a href="/register">here</a></span>
+                </div>
+
+            </footer>
+
+        </form>
+    </div>
+</div>
+
+<% include ../partials/bottom.ejs %>

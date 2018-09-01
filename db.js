@@ -1,7 +1,7 @@
 let mysql = require('mysql');
 
 let mysql_connection = mysql.createConnection({
-    host: 'jdbc:mysql://sql3.freemysqlhosting.net:3306/',
+    host: 'http://sql3.freemysqlhosting.net/',
     user: 'sql3254603',
     password: 'DjZWkTU84u',
     database: 'sql3254603'

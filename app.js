@@ -57,7 +57,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(session({secret: "YOUR SECRETE KEY HERE", resave: false, saveUninitialized: false}));
+app.use(session({secret: "YOUR SECRET KEY HERE", resave: false, saveUninitialized: false}));
 
 
 

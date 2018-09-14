@@ -46,5 +46,5 @@ function handleDisconnect() {
 }
 
 handleDisconnect();*/
-
+module.exports = mysql_connection;
 

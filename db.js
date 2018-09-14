@@ -1,5 +1,17 @@
 let mysql = require('mysql');
+/*
+let mysql_connection = mysql.createConnection({
+    host: 'us-cdbr-iron-east-01.cleardb.net',
+    user: 'b322cccacc5365',
+    password: 'b5b7cb79',
+    database: 'heroku_f07b13119447b3c'
+});
 
+mysql_connection.connect(function (err) {
+    if(err){
+        console.log(err);
+    }
+});*/
 
 let db_config = {
     host: 'us-cdbr-iron-east-01.cleardb.net',
@@ -25,13 +37,14 @@ function handleDisconnect() {
         console.log('db error', err);
         if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
             handleDisconnect();                         // lost due to either server restart, or a
-        } else {                                      // connnection idle timeout (the wait_timeout
+        } else {                                      // connection idle timeout (the wait_timeout
             throw err;                                  // server variable configures this)
         }
     });
+
+    module.exports = connection;
 }
 
 handleDisconnect();
 
 
-module.exports = mysql_connection;

@@ -63,7 +63,7 @@ app.use(session({secret: "YOUR SECRET KEY HERE", resave: false, saveUninitialize
 
 mysql_connection.query("SELECT * FROM users", function (error) {
    if(error){
-       console.log("There was an error while trying to connect to the database.");
+       console.log("There was an error while trying to connect to the database. " + error);
    }else{
        console.log("Connected!");
    }

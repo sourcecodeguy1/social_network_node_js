@@ -1,5 +1,5 @@
 let mysql = require('mysql');
-/*
+
 let mysql_connection = mysql.createConnection({
     host: 'us-cdbr-iron-east-01.cleardb.net',
     user: 'b322cccacc5365',
@@ -11,9 +11,9 @@ mysql_connection.connect(function (err) {
     if(err){
         console.log(err);
     }
-});*/
+});
 
-let db_config = {
+/*let db_config = {
     host: 'us-cdbr-iron-east-01.cleardb.net',
     user: 'b322cccacc5365',
     password: 'b5b7cb79',
@@ -45,6 +45,6 @@ function handleDisconnect() {
     module.exports = connection;
 }
 
-handleDisconnect();
+handleDisconnect();*/
 
 

@@ -13,7 +13,7 @@ let mysql_connection = mysql.createPool({
     connect_timeout :10
 });
 
-mysql_connection.connect(function (err) {
+mysql_connection.getConnection(function (err) {
     if(err){
         console.log(err);
     }

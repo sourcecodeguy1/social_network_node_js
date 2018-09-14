@@ -1,19 +1,25 @@
 let mysql = require('mysql');
 
-/*let mysql_connection = mysql.createConnection({
+let mysql_connection = mysql.createPool({
+    connectionLimit : 100,
+    waitForConnections : true,
+    queueLimit :0,
     host: 'us-cdbr-iron-east-01.cleardb.net',
     user: 'b322cccacc5365',
     password: 'b5b7cb79',
-    database: 'heroku_f07b13119447b3c'
+    database: 'heroku_f07b13119447b3c',
+    debug    :  true,
+    wait_timeout : 28800,
+    connect_timeout :10
 });
 
 mysql_connection.connect(function (err) {
     if(err){
         console.log(err);
     }
-});*/
+});
 
-let db_config = {
+/*let db_config = {
     host: 'us-cdbr-iron-east-01.cleardb.net',
     user: 'b322cccacc5365',
     password: 'b5b7cb79',
@@ -45,6 +51,6 @@ function handleDisconnect() {
     module.exports = connection;
 }
 
-handleDisconnect();
-//module.exports = mysql_connection;
+handleDisconnect();*/
+module.exports = mysql_connection;
 

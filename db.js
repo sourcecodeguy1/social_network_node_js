@@ -1,10 +1,10 @@
 let mysql = require('mysql');
 
 let mysql_connection = mysql.createConnection({
-    host: 'sql130.main-hosting.eu:3306',
-    user: 'u853150949_node',
-    password: 'shishio1',
-    database: 'u853150949_node'
+    host: 'us-cdbr-iron-east-01.cleardb.net',
+    user: 'b322cccacc5365',
+    password: 'b5b7cb79',
+    database: 'heroku_f07b13119447b3c'
 });
 
 mysql_connection.connect(function (err) {

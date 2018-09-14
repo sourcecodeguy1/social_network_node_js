@@ -1,6 +1,6 @@
 let mysql = require('mysql');
 
-/*let mysql_connection = mysql.createPool({
+let mysql_connection = mysql.createPool({
     connectionLimit : 100,
     waitForConnections : true,
     queueLimit :0,
@@ -18,31 +18,10 @@ mysql_connection.connect(function (err) {
         console.log(err);
     }
 });
-module.exports = mysql_connection;*/
+
+module.exports = mysql_connection;
 
 
-DB = {
-    host: 'us-cdbr-iron-east-01.cleardb.net',
-    port: 3306,
-    user: 'b322cccacc5365',
-    password: 'b5b7cb79',
-    timezone: '+0800',
-    connectionLimit: 10, //connection number at a same time
-    connectTimeout: 10000,
-    waitForConnections: true, // enqueue query when no connection available
-    queueLimit: 0 // unlimit queue size
-};
-
-let database = mysql.createPool(DB).getConnection(err, db);
-if (err) {
-    console.log(err);
-    return
-}else{
-    console.log("DB Connected");
-
-}
-
-module.exports = database;
 
 /*let db_config = {
     host: 'us-cdbr-iron-east-01.cleardb.net',

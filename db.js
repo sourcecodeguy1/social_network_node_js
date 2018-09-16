@@ -4,7 +4,7 @@ let mysql_connection = mysql.createPool({
     connectionLimit : 100,
     waitForConnections : true,
     queueLimit :0,
-    host: '185.28.20.242',
+    host: 'sql130.main-hosting.eu',
     user: 'u853150949_node',
     password: 'shishio1',
     database: 'u853150949_node',

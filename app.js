@@ -440,8 +440,8 @@ function upload_profile_image(req, res){
             } else {
 
                 if(req.file === undefined){
-                    //res.render('settings', {u_id: session_id, logged_in_user: session_username, bio: '', msg: 'No File Selected!'});
-                    res.send('No File Selected!');
+                    res.render('settings', {u_id: session_id, logged_in_user: session_username, bio: '', msg: 'No File Selected!'});
+                    //res.send('No File Selected!');
                 }else{
                     console.log("Success! Picture uploaded!");
                 }

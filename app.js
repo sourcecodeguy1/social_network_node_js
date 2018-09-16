@@ -126,12 +126,12 @@ app.post("/register_process", function (req, res) {
 
                        fse.copy('default.png', './public/users/' + username + '/profile_picture/default.png', err => {
                            if (err) return console.error(err);
-                           console.log('success!');
+                           console.log('Default picture copied to user folder successfully!');
 
                        });
                        res.redirect("/login");
                    }else{
-                       res.send("An errror has occurred!");
+                       res.send("An error has occurred!" + err);
                    }
 
                }else{

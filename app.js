@@ -127,9 +127,9 @@ app.post("/register_process", function (req, res) {
                        fse.copy('default.png', './public/users/' + username + '/profile_picture/default.png', err => {
                            if (err) return console.error(err);
                            console.log('success!');
-                           res.redirect("/login");
-                       });
 
+                       });
+                       res.redirect("/login");
                    }else{
                        res.send("An errror has occurred!");
                    }

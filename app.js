@@ -458,14 +458,14 @@ function upload_profile_image(req, res){
 
                             //console.log(db_profile_picture);
 
-                            /*fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
+                            fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
                                 if (err) return console.log(err);
                                 console.log('file deleted successfully');
-                            });*/
+                            });
                         }
 
                     }
-                });
+
 
                 /*UPDATE THE PROFILE PICTURE TO THE DATABASE*/
                 mysql_connection.query("UPDATE users SET profile_picture = ? WHERE id = ?", [req.file.filename, session_id], function (err, rows) {
@@ -487,7 +487,7 @@ function upload_profile_image(req, res){
                     }
                 });
 
-
+              });
             }
         });
 

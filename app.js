@@ -458,10 +458,10 @@ function upload_profile_image(req, res){
 
                             //console.log(db_profile_picture);
 
-                            fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
+                            /*fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
                                 if (err) return console.log(err);
                                 console.log('file deleted successfully');
-                            });
+                            });*/
                         }
 
                     }

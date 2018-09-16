@@ -439,55 +439,56 @@ function upload_profile_image(req, res){
                 res.send(err);
             } else {
 
-                if(req.file === undefined){
+                if (req.file === undefined) {
                     //res.render('settings', {u_id: session_id, logged_in_user: session_username, bio: '', msg: 'No File Selected!'});
                     res.send('No File Selected!');
-                }else{
+                } else {
                     console.log("Success! Picture uploaded!");
-                }
-                /*UNLINK THE OLD IMAGE IF ANY THEN ADD THE NEW IMAGE*/
-                /*CHECK IF THERE IS AN IMAGE IN THE DATABASE*/
 
-                mysql_connection.query("SELECT * FROM users WHERE id = ? ", [session_id], function (error, rows) {
-                    if (error) {
-                        res.send(error);
-                    } else {
+                    /*UNLINK THE OLD IMAGE IF ANY THEN ADD THE NEW IMAGE*/
+                    /*CHECK IF THERE IS AN IMAGE IN THE DATABASE*/
 
-                        for (let i = 0; i < rows.length; i++) {
-                            let db_profile_picture = rows[i].profile_picture;
-
-                            //console.log(db_profile_picture);
-
-                            fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
-                                if (err) return console.log(err);
-                                console.log('file deleted successfully');
-                            });
-                        }
-
-                    }
-
-
-                /*UPDATE THE PROFILE PICTURE TO THE DATABASE*/
-                mysql_connection.query("UPDATE users SET profile_picture = ? WHERE id = ?", [req.file.filename, session_id], function (err, rows) {
-                    if (err) {
-                        res.send(err);
-                    } else {
-
-                        if (rows.changedRows === 1) {
-
-                            console.log(req.file);
-                            console.log("You new file is " + req.file.filename);
-
-                            res.redirect("/profile/" + session_id);
-
+                    mysql_connection.query("SELECT * FROM users WHERE id = ? ", [session_id], function (error, rows) {
+                        if (error) {
+                            res.send(error);
                         } else {
-                            res.send(err);
+
+                            for (let i = 0; i < rows.length; i++) {
+                                let db_profile_picture = rows[i].profile_picture;
+
+                                //console.log(db_profile_picture);
+
+                                fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
+                                    if (err) return console.log(err);
+                                    console.log('file deleted successfully');
+                                });
+                            }
+
                         }
 
-                    }
-                });
 
-              });
+                        /*UPDATE THE PROFILE PICTURE TO THE DATABASE*/
+                        mysql_connection.query("UPDATE users SET profile_picture = ? WHERE id = ?", [req.file.filename, session_id], function (err, rows) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+
+                                if (rows.changedRows === 1) {
+
+                                    console.log(req.file);
+                                    console.log("You new file is " + req.file.filename);
+
+                                    res.redirect("/profile/" + session_id);
+
+                                } else {
+                                    res.send(err);
+                                }
+
+                            }
+                        });
+
+                    });
+                }
             }
         });
 

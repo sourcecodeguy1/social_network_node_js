@@ -10,13 +10,13 @@
 
         <div style="margin-bottom: 100px">
             <img src="../DDRGUY_LOGO.png" alt="Logo" style="margin-left: auto; margin-right: auto; display: block">
+
         </div>
         <!--END OF LOGO CODE-->
 
-        <form action="/register_process" method="post" role="form" class="m-x-auto text-center app-login-form">
-
+        <form action="/register" method="post" role="form" class="m-x-auto text-center app-login-form">
             <!--First name field-->
-            <div class="form-group">
+            <div class="form-group"><br />
                 <input name="first_name" id="txt_first_name" class="form-control" placeholder="First name" type="text">
             </div>
 
@@ -47,19 +47,13 @@
 
             <!--Register button-->
             <div class="m-b-lg">
-                <button class="btn btn-primary">Register</button>
+                <button id="btn_register" class="btn btn-primary">Register</button>
+                <div id="register_login_here">Already a member? Login <a href="/login">here</a></div>
             </div>
 
-            <footer class="screen-login">
-
-                <div id="not_a_member">
-                    <span>Already a member? Login <a href="/login">here</a></span>
-                </div>
-
-            </footer>
 
         </form>
     </div>
 </div>
 
-<% include ../partials/top.ejs %>
+<% include ../partials/bottom.ejs %>

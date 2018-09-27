@@ -86,3 +86,32 @@
     resize: none;
     font-weight: bold;
 }
+
+/*DELETE USER PROFILE*/
+
+#delete_account_title{
+    cursor: pointer;
+}
+
+#delete_account_panel, #delete_account_title {
+    padding: 5px;
+    text-align: center;
+    background-color: #e5eecc;
+    border: solid 1px #c3c3c3;
+}
+
+#delete_account_panel {
+    display: none;
+}
+
+.profile-header-bio{
+
+    color: black;
+}
+#register_login_here{
+    margin-top: 15px;
+}
+.my_footer{
+    width: 100%;
+    margin-top: 290px;
+}

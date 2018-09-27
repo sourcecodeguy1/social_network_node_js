@@ -1,13 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
     <title><%= title %></title>
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <link href="../assets/css/toolkit.css" rel="stylesheet">
     <link href="../assets/css/application.css" rel="stylesheet">
 
     <link rel="stylesheet" href="../main.css">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="../views/js/profile.js"></script>
+    <script src="../views/js/register.js"></script>
 </head>
 <body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top app-navbar">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-main">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="<%= !logged_in_user ? '/' : '#' %>">
+                <img src="../HEADER_DDRGUY_LOGO.png" alt="brand">
+            </a>
+        </div>
+        <!--CHECK IF THE USER IS LOGGED IN-->
+        <div class="navbar-collapse collapse" id="navbar-collapse-main">
+            <% if(logged_in_user){ %>
+            <ul class="nav navbar-nav hidden-xs">
+
+                <li>
+
+                    <a href="/profile/<%= u_id%>"><i class="fas fa-user"></i>&nbsp;<%= logged_in_user === username ? "Profile" : logged_in_user%></a>
+
+                </li>
+
+                <li>
+                    <a data-toggle="modal" href="#msgModal"><i class="fas fa-envelope"></i>&nbsp;Messages</a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right m-r-0 hidden-xs">
+
+                <li>
+                    <% if(logged_in_user === username){ %>
+                    <button class="btn btn-default navbar-btn navbar-btn-avitar" data-toggle="popover">
+
+                        <img class="img-circle" src="../public/users/<%= typeof logged_in_user !== 'undefined' ? logged_in_user : '' %>/profile_picture/<%= typeof user_profile_picture !== 'undefined' ? user_profile_picture : '' %>">
+
+                    </button>
+                    <%}%>
+                </li>
+            </ul>
+            <%}%>
+            <form id="frm_search" class="navbar-form navbar-right app-search" role="search">
+                <div class="form-group">
+                    <input type="text" id="search_user" name="search_user" class="form-control" data-action="grow" placeholder="Search users">
+                    <button id="btn_search" class="btn btn-success">Search</button>
+                </div>
+                <% if( page !== "register" && page !== "login" && !logged_in_user){ %>
+                <a href="/login" class="btn btn-warning">Login</a>
+                <%}%>
+            </form>
+
+            <script src="../assets/js/search/search.js"></script>
+
+            <ul class="nav navbar-nav hidden">
+                <li><a href="/settings">Setting</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav><br /><br />

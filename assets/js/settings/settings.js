@@ -19,4 +19,11 @@ $(document).ready(function () {
        $('#add_update_bio_panel').slideToggle();
 
    });
+
+/*DELETE USER PROFILE*/
+   $('#delete_account_title').click(function () {
+
+       $('#delete_account_panel').slideToggle();
+
+   });
 });

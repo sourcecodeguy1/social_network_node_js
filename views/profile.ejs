@@ -258,9 +258,6 @@
 
 <div class="growl" id="app-growl"></div>
 
-<!--ADD USER NAVIGATION TEMPLATE-->
-
-<% include ../partials/user_navigation_template.ejs %>
 
 <!--END USER NAVIGATION TEMPLATE-->
 
@@ -271,36 +268,50 @@
     <div class="container">
         <div class="container-inner">
             <% console.log(user_profile_picture); %>
-            <img class="img-circle media-object" src="../public/users/<%= username %>/profile_picture/<%= user_profile_picture %>">
+            <img style="width: 200px; height: 190px;" class="img-thumbnail media-object" src="../public/users/<%= username %>/profile_picture/<%= user_profile_picture %>">
             <h3 class="profile-header-user"> <%= username; %> </h3>
-            <% if(bio){ %>
-            <p class="profile-header-bio">
-                <%- bio;%>
-            </p>
-            <%}else{%>
-            <p class="profile-header-bio">
-                Bio hasn't been filled out.
-            </p>
-            <%}%>
+
         </div>
     </div>
 
     <nav class="profile-header-nav">
         <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#">Photos</a>
+
+            <li id="bio" class="">
+                <a class="bio" href="#">Bio</a>
             </li>
-            <li>
-                <a href="#">Others</a>
+
+            <li id="photos" class="">
+                <a class="photos" href="#">Photos</a>
             </li>
-            <li>
-                <a href="#">Anothers</a>
+
+            <li id="friends" class="">
+                <a class="friends" href="#">Friends</a>
             </li>
+
         </ul>
     </nav>
 </div>
 
-<div class="container m-y-md" data-grid="images">
+<div class="container m-y-md bio_panel">
+
+    <div class="jumbotron">
+    <%if(bio){ %>
+
+    <p class="profile-header-bio">
+        <%- bio;%>
+    </p>
+
+    <%}else{%>
+
+        <p class="profile-header-bio">
+            Bio hasn't been filled out.
+        </p>
+    <%}%>
+</div>
+
+</div><!--END OF BIO CONTAINER-->
+<div class="container m-y-md photos_panel collapse" data-grid="images">
     <div>
         <img data-width="640" data-height="400" data-action="zoom" src="../assets/img/instagram_5.jpg">
     </div>
@@ -364,6 +375,10 @@
     <div>
         <img data-width="640" data-height="640" data-action="zoom" src="../assets/img/instagram_2.jpg">
     </div>
+</div>
+
+<div class="container m-y-md friends_panel collapse">
+    <div><p>This is the friends pane.</p></div>
 </div>
 
 <% include ../partials/bottom.ejs %>

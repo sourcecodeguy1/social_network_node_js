@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const bodyparser = require ('body-parser');
 const path = require('path');
 const multer = require('multer');
+const rimraf = require('rimraf');
 const mysql_connection = require('./db'); // Database connection file.
 
 require('dotenv').load();
@@ -30,20 +31,6 @@ const session = require('express-session');
 let session_id;
 let session_username;
 
-/*SET STORAGE ENGINE*/
-/*const storage = multer.diskStorage({
-
-    destination: './public/' + session_username + '/',
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-});*/
-
-/*INIT UPLOAD*/
-/*const upload = multer({
-    storage: storage
-}).single('file_upload');*/
-
 app.use(bodyparser.urlencoded({extended: false}));
 app.set("view engine", "ejs");
 //app.use(express.static(__dirname));
@@ -59,16 +46,6 @@ app.use(function(req, res, next) {
 
 app.use(session({secret: "YOUR SECRET KEY HERE", resave: false, saveUninitialized: false}));
 
-
-
-mysql_connection.query("SELECT * FROM users", function (error) {
-   if(error){
-       console.log("There was an error while trying to connect to the database. " + error);
-   }else{
-       console.log("Connected!");
-   }
-});
-
 /*Route for index or landing page*/
 app.get("/", function (req, res) {
     res.render("index");
@@ -79,12 +56,13 @@ app.get("/register", function (req, res) {
     if(session_username){
        res.redirect("/profile/" + session_id);
     }else {
-        res.render("register");
+        res.render("register", {u_id: session_id, logged_in_user: session_username, username: '', page: "register"});
+
     }
 });
 
 /*Process register page*/
-app.post("/register_process", function (req, res) {
+app.post("/register", function (req, res) {
     const FirstName = req.body.first_name;
     const LastName = req.body.last_name;
     const username = req.body.username;
@@ -117,6 +95,8 @@ app.post("/register_process", function (req, res) {
                if(rows.affectedRows === 1){
                    console.log("Data has been inserted.");
 
+                   let data_inserted = {result: "success"};
+
                    // Create user folder
                    let dir = "./public/users/" + username;
 
@@ -129,18 +109,21 @@ app.post("/register_process", function (req, res) {
                            console.log('Default picture copied to user folder successfully!');
 
                        });
-                       res.redirect("/login");
+                       res.send(data_inserted);
                    }else{
                        //res.send("An error has occurred!" + err);
                        fse.copy('default.png', './public/users/' + username + '/profile_picture/default.png', err => {
                            if (err) return console.error(err);
                            console.log('Default picture copied to user folder successfully!');
-
+                           //res.redirect("/login");
+                           res.send(data_inserted);
                        });
                    }
 
                }else{
                    console.log("Data has not been inserted.");
+                   let data_not_inserted = {result: "error", msg: "An error has occurred, please try again."};
+                   res.send(data_not_inserted);
                }
            }
         });
@@ -156,13 +139,13 @@ app.get("/login", function (req, res) {
         res.redirect("/profile/" + session_id);
     }else{
         console.log("No session username found");
-        res.render("login");
+        res.render("login", {logged_in_user: session_username, page: "login"});
     }
 });
 
 
 /*Route for processing the login form and user input*/
-app.post("/login_process", function (req, res) {
+app.post("/login", function (req, res) {
 // Get username and password from the form.
     const username = req.body.username;
     const password = req.body.password;
@@ -212,39 +195,6 @@ app.post("/login_process", function (req, res) {
     }
 });
 
-/*app.get("/profile", function (req, res) {
-
-    if(!session_username){
-        res.status(401).send("You are not authorized to view this page... FUCK OFF!!!");
-    } else {
-        const id = session_id;
-        const username = session_username;
-        //const current_logged_in_user = req.session.rows;
-        console.log("Profile id is " + id + " and your username is " + username );
-
-        mysql_connection.query("SELECT * FROM users WHERE username = ?", [username], function (err, rows) {
-
-            if(err){
-                console.log(err);
-                res.send(err);
-            }else{
-
-                for(let i = 0; i < rows.length; i++){
-                    let db_id = rows[i].id;
-                    let db_username = rows[i].username;
-                    let db_first_name = rows[i].first_name;
-                    let db_last_name = rows[i].last_name;
-                    let db_user_bio = nl2br(rows[i].user_bio);
-
-                    res.render("profile", {u_id: db_id, username: db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio});
-                }
-
-            }
-        });
-    }
-
-});*/
-
 app.get("/profile", function (req, res) {
     if(!session_username || session_username === null){
         res.redirect("/login");
@@ -253,10 +203,6 @@ app.get("/profile", function (req, res) {
 
     }
 });
-
-/*
-* 
-* */
 
 /*Route for profile page*/
 app.get("/profile/:id", function (req, res) {
@@ -283,38 +229,13 @@ app.get("/profile/:id", function (req, res) {
                        let db_user_bio = nl2br(rows[i].user_bio);
                        let profile_picture = rows[i].profile_picture;
 
-                       res.render("profile", {u_id: session_id, 'username': db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio, user_profile_picture: profile_picture});
+                       res.render("profile", {u_id: session_id, username: db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio, user_profile_picture: profile_picture, page: "profile"});
+
                    }
                }
 
             }
         });
-
-    /*}else{
-        const current_logged_in_user = req.session.rows;
-
-        // Connect to the database and pull the current logged in user's details.
-        mysql_connection.query("SELECT * FROM users WHERE username = ?", [current_logged_in_user], function (err, rows) {
-
-            if(err){
-                console.log(err);
-                res.send(err);
-            }else{
-
-                for(let i = 0; i < rows.length; i++){
-                    let db_id = rows[i].id;
-                    let db_first_name = rows[i].first_name;
-                    let db_last_name = rows[i].last_name;
-                    let db_user_bio = nl2br(rows[i].user_bio);
-
-                    res.render("profile", {id: db_id, logged_in_user: current_logged_in_user, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio});
-                }
-
-            }
-
-        });
-    }*/
-
 });
 
 /*function nl2br(someText) {
@@ -323,10 +244,11 @@ app.get("/profile/:id", function (req, res) {
 
 /*Route for logging out the user*/
 app.get("/logout", function (req, res) {
+
     if(!session_username){
         return res.status(401).send("Oops! The page that you are looking for wasn't found.");
     }else{
-        
+
         // Create a variable for the current logged in user.
         //let current_logged_in_user = req.session.rows;
 
@@ -338,6 +260,7 @@ app.get("/logout", function (req, res) {
                 //res.render("logout", {user: current_logged_in_user});
                 //res.redirect("/profile/"+session_id);
                 // Destroy the current logged in user's session.
+
                 session_id = null;
                 session_username = null;
 
@@ -360,8 +283,9 @@ app.get('/settings', function (req, res) {
                 // Loop through each user data and Fetch out current user data and send it to the settings route page
                 for(let i = 0; i < rows.length; i++){
                     let db_bio = rows[i].user_bio;
+                    let db_username = rows[i].username;
                     let profile_picture = rows[i].profile_picture;
-                    res.render("settings", {u_id: session_id, logged_in_user: session_username, bio: db_bio, user_profile_picture: profile_picture});
+                    res.render("settings", {u_id: session_id, username: db_username, logged_in_user: session_username, bio: db_bio, user_profile_picture: profile_picture, page: "settings"});
                 }
             }
         });
@@ -527,15 +451,13 @@ app.post('/bio_post', function (req, res) {
                     //let id = {id: session_id};
                     //res.redirect("/profile/" + JSON.stringify(id.id));
                     //console.log("bio post id is: " + JSON.stringify(id.id));
-                    let msg_success = {id: session_id, success_msg: 'Bio successfully inserted!'};
+                    let msg_success = {id: session_id, success_msg: 'Bio Updated!'};
                     res.send(msg_success);
 
                 } else {
-                  /*  let msg_error = {msg_err: 'No changes were made to your bio.'};
+                    let msg_error = {msg_err: 'No changes were made to your bio.'};
                     res.send(msg_error);
-                    console.log(msg_error);*/
-
-                    res.render("settings", {bio_err_msg: "No changes were made to your bio."});
+                    console.log(msg_error);
 
                 }
 
@@ -548,12 +470,78 @@ app.post('/bio_post', function (req, res) {
 });
 /*END ADD OR UPDATE ROUTE*/
 
+/**DELETE USER ACCOUNT**/
+app.post('/delete', function (req, res) {
+    // Connect to the database and delete the current logged in user.
+    mysql_connection.query("DELETE FROM users WHERE username = ?", [session_username], function (err, row) {
+
+        if(err){
+            res.send(err);
+        }else{
+            if(row.affectedRows === 1){
+                let delete_message = {result: "success", username: session_username};
+                res.send(delete_message);
+                removeUserFolder();
+            } else {
+                let delete_message = {result: "error", msg: "An error has occurred!"};
+                res.send(delete_message);
+            }
+        }
+
+    });
+
+});
+
 /************************************************END OF SETTING ROUTE********************************************/
+
+/**SEARCH ROUTE**/
+app.post('/search', function (req, res) {
+
+    let search = req.body.search_user;
+    console.log(search);
+
+    // Connect to the database and begin search based on username.
+    mysql_connection.query("SELECT * FROM users WHERE username = ?", [search], function (err, rows) {
+        if(err){
+            res.send(err);
+        } else {
+
+            if(rows.length === 0){
+                console.log(search);
+                console.log("User NOT found!");
+                let user_not_found = {result: "error", msg: "That user was not found."};
+
+                res.send(user_not_found);
+
+            } else {
+
+                for(let i = 0; i < rows.length; i++){
+
+                    let db_id = rows[i].id;
+
+                    console.log("User found" + " " + db_id);
+                    let user_found = {result: "success", msg: "User found!.", id: db_id};
+
+                    res.send(user_found);
+
+                }
+
+            }
+
+        }
+    });
+});
 
 /*Route error handling*/
 app.get('*', function(req, res) {
     res.send('Oops! The page that you are looking for wasn\'t found.');
 });
+
+function removeUserFolder(){
+     fse.remove('./public/users/' + session_username , function () {
+       console.log( session_username + "'s" + " folder was removed!");
+   } );
+}
 
 //Listen the port here
 app.listen(app.get('port'), function () {

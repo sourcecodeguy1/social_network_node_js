@@ -9,6 +9,8 @@ $(document).ready(function () {
 
     let user_bio  = $('#txt_user_bio');
 
+    let error_msg = $('#error_msg');
+
     // Handle button click event
 
     $('#btn_register').on('click', function (e) {
@@ -40,7 +42,7 @@ $(document).ready(function () {
                     if(data.result === "success"){
                         window.location.href = "/login";
                     }else{
-                        alert(data.msg);
+                        error_msg.html(data.msg).slideDown().delay(5000).slideUp();
                     }
                 }
             });

@@ -38,7 +38,6 @@ $(document).ready(function () {
             $('li#photos').addClass('active');
             $('.photos_panel').delay('slow').fadeIn();
 
-
         }
 
     });

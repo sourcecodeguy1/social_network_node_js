@@ -84,50 +84,82 @@ app.post("/register", function (req, res) {
         res.send("Please enter your password.");
     }else{
 
-        // Hash the user password before inserting to the database.
-        bcrypt.hash(password, 10, function (err, hash) {
+        /**CHECK IF THE USER EXISTS ALREADY**/
 
-        // // Insert data into database.
-        mysql_connection.query("INSERT INTO users (first_name, last_name, username, email, password, user_bio, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)", [FirstName, LastName, username, email, hash, bio, profile_picture], function (err, rows) {
-           if(err){
-               res.send(err);
-           }else{
-               if(rows.affectedRows === 1){
-                   console.log("Data has been inserted.");
+        mysql_connection.query("SELECT * FROM users WHERE username = ?", [username], function (error, rows) {
+            if(error){
+                res.send(error);
+            } else {
 
-                   let data_inserted = {result: "success"};
+                if(rows.length === 0){
 
-                   // Create user folder
-                   let dir = "./public/users/" + username;
+                    mysql_connection.query("SELECT * FROM users WHERE email = ?", [email], function (error, rows) {
 
-                   if (!fs.existsSync(dir)){
+                        if(error){
+                            res.send(error);
+                        } else {
 
-                       fs.mkdirSync(dir);
+                            if(rows.length === 0){
 
-                       fse.copy('default.png', './public/users/' + username + '/profile_picture/default.png', err => {
-                           if (err) return console.error(err);
-                           console.log('Default picture copied to user folder successfully!');
+                                // Hash the user password before inserting to the database.
+                                bcrypt.hash(password, 10, function (err, hash) {
 
-                       });
-                       res.send(data_inserted);
-                   }else{
-                       //res.send("An error has occurred!" + err);
-                       fse.copy('default.png', './public/users/' + username + '/profile_picture/default.png', err => {
-                           if (err) return console.error(err);
-                           console.log('Default picture copied to user folder successfully!');
-                           //res.redirect("/login");
-                           res.send(data_inserted);
-                       });
-                   }
+                                    // // Insert data into database.
+                                    mysql_connection.query("INSERT INTO users (first_name, last_name, username, email, password, user_bio, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)", [FirstName, LastName, username, email, hash, bio, profile_picture], function (err, rows) {
+                                        if(err){
+                                            res.send(err);
+                                        }else{
+                                            if(rows.affectedRows === 1){
+                                                console.log("Data has been inserted.");
 
-               }else{
-                   console.log("Data has not been inserted.");
-                   let data_not_inserted = {result: "error", msg: "An error has occurred, please try again."};
-                   res.send(data_not_inserted);
-               }
-           }
+                                                let data_inserted = {result: "success"};
+
+                                                // Create user folder
+                                                let dir = "./public/users/" + username;
+
+                                                if (!fs.existsSync(dir)){
+
+                                                    fs.mkdirSync(dir);
+
+                                                    fse.copy('default.png', './public/users/' + username + '/profile_picture/default.png', err => {
+                                                        if (err) return console.error(err);
+                                                        console.log('Default picture copied to user folder successfully!');
+
+                                                    });
+                                                    res.send(data_inserted);
+                                                }else{
+                                                    //res.send("An error has occurred!" + err);
+                                                    fse.copy('default.png', './public/users/' + username + '/profile_picture/default.png', err => {
+                                                        if (err) return console.error(err);
+                                                        console.log('Default picture copied to user folder successfully!');
+                                                        //res.redirect("/login");
+                                                        res.send(data_inserted);
+                                                    });
+                                                }
+
+                                            }else{
+                                                console.log("Data has not been inserted.");
+                                                let data_not_inserted = {result: "error", msg: "An error has occurred, please try again."};
+                                                res.send(data_not_inserted);
+                                            }
+                                        }
+                                    });
+                                }); // End of bcrypt password encryption
+
+                            } else {
+                                let email_exists = {result: "error", msg: "A user with that email address already exists, please choose another email address."};
+                                res.send(email_exists);
+                            }
+                        }
+                    });
+
+                } else {
+                    let user_exists = {result: "error", msg: "That user already exists, please choose a different username."};
+                    res.send(user_exists);
+                }
+
+            }
         });
-      });
     }
 });
 

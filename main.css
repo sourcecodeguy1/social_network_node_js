@@ -113,5 +113,14 @@
 }
 .my_footer{
     width: 100%;
-    margin-top: 290px;
+
+}
+#bio a:hover{
+    cursor: pointer;
+}
+#photos a:hover{
+    cursor: pointer;
+}
+#friends a:hover{
+    cursor: pointer;
 }

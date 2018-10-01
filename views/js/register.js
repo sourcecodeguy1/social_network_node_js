@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
 // Create a global variable for the form inputs
 
     let firstName = $('#txt_first_name');
@@ -41,7 +42,13 @@ $(document).ready(function () {
                 success: function (data) {
                     if(data.result === "success"){
                         window.location.href = "/login";
-                    }else{
+                    }else if(data.result === "error_username"){
+                        errorHandler(username);
+                        error_msg.html(data.msg).slideDown().delay(5000).slideUp();
+                    } else if(data.result === "error_email"){
+                        errorHandler(email)
+                        error_msg.html(data.msg).slideDown().delay(5000).slideUp();
+                    } else {
                         error_msg.html(data.msg).slideDown().delay(5000).slideUp();
                     }
                 }
@@ -56,45 +63,9 @@ $(document).ready(function () {
     inputValidationBlur(firstName);
     inputValidationBlur(lastName);
     inputValidationBlur(email);
-    inputValidationBlur2(email);
+    inputEmailValidationBlur(email);
     inputValidationBlur(username);
     inputValidationBlur(password);
-
-
-    /**CREATE ERROR FUNCTION TO HANDLE FORM INPUT VALIDATION**/
-    function errorHandler(element) {
-        return element.css({border: "1px solid red", backgroundColor: "#F5D0D0"});
-    }
-
-    function successHandler(element) {
-        return element.css({border: "1px solid green", backgroundColor: "#fff"});
-    }
-
-    /**CREATE INPUT VALIDATION AND ADDING BLUR EFFECT FUNCTION**/
-    function inputValidationBlur(element) {
-        element.on('blur', function () {
-           if(element.val() === ""){
-               errorHandler(element);
-           } else {
-               successHandler(element);
-           }
-        });
-    }
-    /**CREATE A CHECK FUNCTION FOR EMAIL VALIDATION AND ADD BLUR EFFECT**/
-    function inputValidationBlur2(element) {
-        element.on('blur', function () {
-           if(!isValidEmailAddress(element.val())){
-               errorHandler(element);
-           } else {
-               successHandler(element);
-           }
-        });
-    }
-
-    function isValidEmailAddress(emailAddress) {
-        let pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-        return pattern.test(emailAddress);
-    }
 
 });
 

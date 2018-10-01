@@ -18,7 +18,7 @@ $(document).ready(function () {
             $('.photos_panel').fadeOut();
 
             $('li#bio').addClass('active');
-            $('.bio_panel').delay('slow').fadeIn();
+            $('.bio_panel').delay('slow').show();
 
 
         }
@@ -36,7 +36,7 @@ $(document).ready(function () {
             $('.friends_panel').fadeOut();
 
             $('li#photos').addClass('active');
-            $('.photos_panel').delay('slow').fadeIn();
+            $('.photos_panel').delay('slow').show();
 
         }
 
@@ -53,7 +53,7 @@ $(document).ready(function () {
             $('.photos_panel').fadeOut();
 
             $('li#friends').addClass('active');
-            $('.friends_panel').delay('slow').fadeIn();
+            $('.friends_panel').delay('slow').show();
 
         }
 

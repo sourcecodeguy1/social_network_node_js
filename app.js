@@ -43,7 +43,6 @@ app.use(function(req, res, next) {
     res.setHeader('Expires', '0');
     next();
 });
-
 app.use(session({secret: "YOUR SECRET KEY HERE", resave: false, saveUninitialized: false}));
 
 /*Route for index or landing page*/
@@ -147,14 +146,14 @@ app.post("/register", function (req, res) {
                                 }); // End of bcrypt password encryption
 
                             } else {
-                                let email_exists = {result: "error", msg: "A user with that email address already exists, please choose another email address."};
+                                let email_exists = {result: "error_email", msg: "A user with that email address already exists, please choose another email address."};
                                 res.send(email_exists);
                             }
                         }
                     });
 
                 } else {
-                    let user_exists = {result: "error", msg: "That user already exists, please choose a different username."};
+                    let user_exists = {result: "error_username", msg: "That user already exists, please choose a different username."};
                     res.send(user_exists);
                 }
 

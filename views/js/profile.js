@@ -12,10 +12,10 @@ $(document).ready(function () {
         if( bio === "" || photos === "active" || friends === "active"){
 
             $('li#friends').removeClass('active');
-            $('.friends_panel').fadeOut();
+            $('.friends_panel').hide();
 
             $('li#photos').removeClass('active');
-            $('.photos_panel').fadeOut();
+            $('.photos_panel').hide();
 
             $('li#bio').addClass('active');
             $('.bio_panel').delay('slow').show();
@@ -30,10 +30,10 @@ $(document).ready(function () {
         if( photos === "" || bio === "active" || friends === "active"){
 
             $('li#bio').removeClass('active');
-            $('.bio_panel').fadeOut();
+            $('.bio_panel').hide();
 
             $('li#friends').removeClass('active');
-            $('.friends_panel').fadeOut();
+            $('.friends_panel').hide();
 
             $('li#photos').addClass('active');
             $('.photos_panel').delay('slow').show();
@@ -47,10 +47,10 @@ $(document).ready(function () {
         if(friends === "" || bio === "active" || photos === "active"){
 
             $('li#bio').removeClass('active');
-            $('.bio_panel').fadeOut();
+            $('.bio_panel').hide();
 
             $('li#photos').removeClass('active');
-            $('.photos_panel').fadeOut();
+            $('.photos_panel').hide();
 
             $('li#friends').addClass('active');
             $('.friends_panel').delay('slow').show();

@@ -210,16 +210,21 @@ app.post("/login", function (req, res) {
                                 session_id = req.session.rows = db_id;
                                 session_username = req.session.rows = db_user;
 
+                                let _result = {result: "success", id: session_id};
+
                                 console.log("session_id " + session_id + " session_username " + session_username);
-                                res.redirect("/profile/" + session_id);
+                                //res.redirect("/profile/" + session_id);
+                                res.send(_result);
 
                             } else {
-                                res.send("Username/Passwords are incorrect!");
+                                let _result = {result: "error", msg: "Username or Password is incorrect."};
+                                res.send(_result);
                             }
                         });
                     }
                 }else{
-                    res.send("That user wasn't found.");
+                    let _result = {result: "error", msg: "Username or Password is incorrect."};
+                    res.send(_result);
                 }
             }
         });

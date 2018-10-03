@@ -8236,7 +8236,9 @@ img.zoom-img {
 }
 .profile-header .container-inner {
   max-width: 300px;
-  margin: 0 auto;
+  margin: 20px auto;
+
+
 }
 .profile-header .media-object {
   display: inline-block;

@@ -6439,14 +6439,24 @@ fieldset[disabled] .btn-danger-outline.active {
 .container-fill-height .container-content-middle {
   display: table-cell;
   vertical-align: middle;
+
 }
 .container-fill-height .container-content-bottom {
   vertical-align: bottom;
 }
+
+@media (max-width: 480px) {
+
+    .login_container img{
+        width: 100%;
+    }
+}
+
 @media (min-width: 768px) {
   .container-fluid-spacious {
     padding-right: 40px;
     padding-left: 40px;
+
   }
 }
 .dropdown-menu {

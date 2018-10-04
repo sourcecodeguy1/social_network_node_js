@@ -8479,13 +8479,13 @@ img.zoom-img {
   margin-left: 5px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
     .user_menu{
         display: block;
     }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
     .user_menu{
         display: none;
     }

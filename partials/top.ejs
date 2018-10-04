@@ -77,9 +77,20 @@
 
             <script src="../assets/js/search/search.js"></script>
 
-            <ul class="nav navbar-nav hidden">
+            <ul class="nav navbar-nav user_menu">
+                <% if(logged_in_user){ %>
+                <li><a href="/profile/<%= u_id%>"><i class="fas fa-user"></i>&nbsp;<%= logged_in_user === username ? "Profile" : logged_in_user%></a></li>
+
+                <li><a data-toggle="modal" href="#msgModal"><i class="fas fa-envelope"></i>&nbsp;Messages</a></li>
+                <%}%>
+            </ul>
+
+            <ul class="nav navbar-nav user_menu">
+                <% if(logged_in_user){ %>
+
                 <li><a href="/settings">Setting</a></li>
                 <li><a href="/logout">Logout</a></li>
+                <%}%>
             </ul>
         </div>
     </div>

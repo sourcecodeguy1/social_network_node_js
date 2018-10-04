@@ -8478,3 +8478,15 @@ img.zoom-img {
 .panel-link-list a {
   margin-left: 5px;
 }
+
+@media (max-width: 480px) {
+    .user_menu{
+        display: block;
+    }
+}
+
+@media (min-width: 600px) {
+    .user_menu{
+        display: none;
+    }
+}

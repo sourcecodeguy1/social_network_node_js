@@ -124,3 +124,6 @@
 #friends a:hover{
     cursor: pointer;
 }
+#btn_search{
+    margin-top: 5px;
+}

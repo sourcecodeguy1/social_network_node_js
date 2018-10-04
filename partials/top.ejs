@@ -68,10 +68,10 @@
             <form id="frm_search" class="navbar-form navbar-right app-search" role="search">
                 <div class="form-group">
                     <input type="text" id="search_user" name="search_user" class="form-control" data-action="grow" placeholder="Search users">
-                    <button id="btn_search" class="btn btn-success">Search</button>
+                    <button id="btn_search" class="btn btn-success btn-sm">Search</button>
                 </div>
                 <% if( page !== "register" && page !== "login" && !logged_in_user){ %>
-                <a href="/login" class="btn btn-warning">Login</a>
+                <a href="/login" class="btn btn-warning btn-sm" style="width: 60px;">Login</a>
                 <%}%>
             </form>
 

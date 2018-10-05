@@ -45,11 +45,14 @@ $(document).ready(function () {
                     }else if(data.result === "error_username"){
                         errorHandler(username);
                         error_msg.html(data.msg).slideDown().delay(5000).slideUp();
+                        scrollToTop();
                     } else if(data.result === "error_email"){
-                        errorHandler(email)
+                        errorHandler(email);
                         error_msg.html(data.msg).slideDown().delay(5000).slideUp();
+                        scrollToTop();
                     } else {
                         error_msg.html(data.msg).slideDown().delay(5000).slideUp();
+                        scrollToTop();
                     }
                 }
             });

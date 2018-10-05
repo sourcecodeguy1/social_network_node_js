@@ -21,6 +21,7 @@ $(document).ready(function () {
 
         if(firstName.val() === ""){
             errorHandler(firstName);
+            scrollToTop();
         } else if(lastName.val() === ""){
             errorHandler(lastName);
         } else if(email.val() === "") {

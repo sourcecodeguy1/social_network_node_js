@@ -5,6 +5,8 @@ const bodyparser = require ('body-parser');
 const path = require('path');
 const multer = require('multer');
 const rimraf = require('rimraf');
+const cookieParser = require('cookie-parser');
+const flash  = require('connect-flash');
 const mysql_connection = require('./db'); // Database connection file.
 
 require('dotenv').load();
@@ -31,19 +33,26 @@ const session = require('express-session');
 let session_id;
 let session_username;
 
+
 app.use(bodyparser.urlencoded({extended: false}));
 app.set("view engine", "ejs");
 //app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname)));
+
+app.use(cookieParser('secret'));
+app.use(session({secret: "YOUR SECRET KEY HERE", resave: true, saveUninitialized: true}));
+
+app.use(flash());
 
 /*The code below makes sure the user is completely logged out and can't access his or her account by hitting the back button*/
 app.use(function(req, res, next) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     next();
 });
-app.use(session({secret: "YOUR SECRET KEY HERE", resave: false, saveUninitialized: false}));
 
 /*Route for index or landing page*/
 app.get("/", function (req, res) {
@@ -210,6 +219,8 @@ app.post("/login", function (req, res) {
                                 session_id = req.session.rows = db_id;
                                 session_username = req.session.rows = db_user;
 
+                                req.flash("success", "Welcome, " + session_username );
+
                                 let _result = {result: "success", id: session_id};
 
                                 console.log("session_id " + session_id + " session_username " + session_username);
@@ -289,20 +300,15 @@ app.get("/logout", function (req, res) {
         //let current_logged_in_user = req.session.rows;
 
 
-        req.session.destroy(function (err) {
-            if(err){
-                res.send(err);
-            }else{
                 //res.render("logout", {user: current_logged_in_user});
                 //res.redirect("/profile/"+session_id);
                 // Destroy the current logged in user's session.
 
                 session_id = null;
                 session_username = null;
-
+                req.flash("success", "You have successfully logged out.");
                 res.redirect("/login");
-            }
-        });
+
     }
 });
 

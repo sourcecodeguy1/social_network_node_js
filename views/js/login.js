@@ -6,6 +6,10 @@ $(document).ready(function () {
 
     let error_msg = $('#error_msg');
 
+    /**FLASH MESSAGE ELEMENTS**/
+    let flash_msg_error = $('#flash_msg_error');
+    let flash_msg_success = $('#flash_msg_success');
+
     $('#btn_login').on('click', function (e) {
         e.preventDefault();
 
@@ -22,7 +26,9 @@ $(document).ready(function () {
                 data: {username: username.val(), password: password.val()},
                 success: function (data) {
                     if(data.result === "success"){
+
                         window.location.href = "/profile/" + data.id;
+
                     } else {
                         error_msg.html(data.msg).slideDown().delay(5000).slideUp();
 

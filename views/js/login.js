@@ -6,10 +6,6 @@ $(document).ready(function () {
 
     let error_msg = $('#error_msg');
 
-    /**FLASH MESSAGE ELEMENTS**/
-    let flash_msg_error = $('#flash_msg_error');
-    let flash_msg_success = $('#flash_msg_success');
-
     $('#btn_login').on('click', function (e) {
         e.preventDefault();
 

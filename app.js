@@ -39,9 +39,11 @@ app.set("view engine", "ejs");
 //app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname)));
 
+// Set up session and cookie parser
 app.use(cookieParser('secret'));
 app.use(session({secret: "YOUR SECRET KEY HERE", resave: true, saveUninitialized: true}));
 
+// Use flash.
 app.use(flash());
 
 /*The code below makes sure the user is completely logged out and can't access his or her account by hitting the back button*/

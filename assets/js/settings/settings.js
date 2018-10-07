@@ -26,4 +26,25 @@ $(document).ready(function () {
        $('#delete_account_panel').slideToggle();
 
    });
+
+   $('#btnDelete').click(function () {
+
+       $('.modal_alert').show();
+
+       let username = $('#hidden_input_delete_account').val();
+       console.log("Settings.ejs " +  username);
+
+       // Show modal dialog message
+       $('#modal_message').html("You are about to delete account with username " + "<strong>"+ username +"</strong>" + " once deleted, the account cannot be recovered. Continue?");
+
+   });
+
+   $('#modal_cancel_btn').on('click', function () {
+      $('.modal_alert').hide();
+   });
+
+   $('#modal_x_btn').on('click', function () {
+      $('.modal_alert').hide();
+   });
+
 });

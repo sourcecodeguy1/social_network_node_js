@@ -29,10 +29,9 @@ $(document).ready(function () {
 
    $('#btnDelete').click(function () {
 
-       $('.modal_alert').show();
+       $('.modal_alert').fadeIn();
 
        let username = $('#hidden_input_delete_account').val();
-       console.log("Settings.ejs " +  username);
 
        // Show modal dialog message
        $('#modal_message').html("You are about to delete account with username " + "<strong>"+ username +"</strong>&#46;" + " Once deleted, the account cannot be recovered. Continue?");
@@ -40,11 +39,11 @@ $(document).ready(function () {
    });
 
    $('#modal_cancel_btn').on('click', function () {
-      $('.modal_alert').hide();
+      $('.modal_alert').fadeOut();
    });
 
    $('#modal_x_btn').on('click', function () {
-      $('.modal_alert').hide();
+      $('.modal_alert').fadeOut();
    });
 
 });

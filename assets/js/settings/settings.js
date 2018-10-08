@@ -35,7 +35,7 @@ $(document).ready(function () {
        console.log("Settings.ejs " +  username);
 
        // Show modal dialog message
-       $('#modal_message').html("You are about to delete account with username " + "<strong>"+ username +"</strong>." + " Once deleted, the account cannot be recovered. Continue?");
+       $('#modal_message').html("You are about to delete account with username " + "<strong>"+ username +"</strong>&#46;" + " Once deleted, the account cannot be recovered. Continue?");
 
    });
 

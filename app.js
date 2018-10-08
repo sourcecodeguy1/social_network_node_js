@@ -298,18 +298,10 @@ app.get("/logout", function (req, res) {
         return res.status(401).send("Oops! The page that you are looking for wasn't found.");
     }else{
 
-        // Create a variable for the current logged in user.
-        //let current_logged_in_user = req.session.rows;
-
-
-                //res.render("logout", {user: current_logged_in_user});
-                //res.redirect("/profile/"+session_id);
-                // Destroy the current logged in user's session.
-
-                session_id = null;
-                session_username = null;
-                req.flash("success", "You have successfully logged out.");
-                res.redirect("/login");
+        session_id = null;
+        session_username = null;
+        req.flash("success", "You have successfully logged out.");
+        res.redirect("/login");
 
     }
 });
@@ -523,9 +515,10 @@ app.post('/delete', function (req, res) {
             res.send(err);
         }else{
             if(row.affectedRows === 1){
+                removeUserFolder();
                 let delete_message = {result: "success", username: session_username};
                 res.send(delete_message);
-                removeUserFolder();
+
             } else {
                 let delete_message = {result: "error", msg: "An error has occurred!"};
                 res.send(delete_message);
@@ -535,7 +528,31 @@ app.post('/delete', function (req, res) {
     });
 
 });
+app.get('/deleted', function (req, res) {
+    if(session_username){
 
+        mysql_connection.query("SELECT * FROM users WHERE id = ? ", [session_id], function (err, rows) {
+            if(err){
+                res.send(err);
+            } else {
+
+                if(rows.length === 0){
+                    session_id = null;
+                    session_username = null;
+                    req.flash("success", "Your account has been deleted.");
+                    res.redirect("/login");
+                } else {
+                    res.redirect("/profile/" + session_id );
+                }
+
+            }
+        });
+
+
+    } else {
+        res.redirect("/login");
+    }
+});
 /************************************************END OF SETTING ROUTE********************************************/
 
 /**SEARCH ROUTE**/

@@ -43,6 +43,12 @@
             <ul class="nav navbar-nav hidden-xs">
 
                 <li>
+                    <%if(page !== "dashboard"){%>
+                    <a href="/dashboard">Dashboard</a>
+                    <%}%>
+                </li>
+
+                <li>
 
                     <a href="/profile/<%= u_id%>"><i class="fas fa-user"></i>&nbsp;<%= logged_in_user === username ? "Profile" : logged_in_user%></a>
 
@@ -96,17 +102,19 @@
         </div>
     </div>
 </nav><br /><br />
-<!--ERROR MESSAGE HOLDER FOR REGISTER-->
-<div class="container">
 
-    <% if(error && error.length > 0) { %>
-    <div id="flash_msg_error" class="alert alert-danger" role="alert"><%= error %></div>
-    <% } %>
-
-    <% if(success && success.length > 0) { %>
-    <div id="flash_msg_success" class="alert alert-success" role="alert"><%= success %></div>
-    <% } %>
-</div>
 <div id="top_error_msg" class="container text-center">
     <div id="error_msg" class="alert alert-danger collapse"></div>
+
+    <!--ERROR MESSAGE HOLDER FOR REGISTER-->
+    <div class="container">
+
+        <% if(error && error.length > 0) { %>
+        <div id="flash_msg_error" class="alert alert-danger" role="alert"><%= error %></div>
+        <% } %>
+
+        <% if(success && success.length > 0) { %>
+        <div id="flash_msg_success" class="alert alert-success" role="alert"><%= success %></div>
+        <% } %>
+    </div>
 </div>

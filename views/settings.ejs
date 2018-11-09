@@ -68,7 +68,7 @@
 
     <!--ADD OR UPDATE BIO-->
 
-    <div id="add_update_bio_title"><strong>Add or Update Bio</strong></div>
+    <div id="add_update_bio_title"><strong><%= typeof bio !== 'undefined' && bio !== '' ? 'Update Bio' : 'Add Bio'%></strong></div>
     <div id="add_update_bio_panel">
 
         <form id="frm_add_update_bio" action="/bio_post" method="post"><br />

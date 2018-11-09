@@ -256,45 +256,30 @@
     </div>
 </div>
 
-<div class="growl" id="app-growl"></div>
-
 
 <!--END USER NAVIGATION TEMPLATE-->
 
-<!--User Profile Information-->
+<div class="container">
+    <div id="profile_background_theme" class="container">
+        <img src="../DDR_Themes/ddrextreme.jpg" class="img-responsive img-thumbnail" alt="Dance Dance Revolution Extreme">
+    </div>
 
-<div class="profile-header text-center" style="background-image: url(../assets/img/iceland.jpg);">
-    <div class="container">
-        <div class="container-inner">
+</div>
+
+<!--User Profile Information-->
+<div class="container m-y-md bio_panel">
+
+    <div class="container col-md-6">
+        <div id="profile_image" class="jumbotron container-inner">
             <% console.log(user_profile_picture); %>
             <img style="width: 200px; height: 190px;" class="img-thumbnail media-object" src="../public/users/<%= username %>/profile_picture/<%= user_profile_picture %>">
-            <h3 class="profile-header-user"> <%= username; %> </h3>
+            <h3 id="profile_username" class="profile-header-user"> <%= username; %> </h3>
 
         </div>
     </div>
 
-    <nav class="profile-header-nav">
-        <ul class="nav nav-tabs">
-
-            <li id="bio" class="">
-                <a class="bio">Bio</a>
-            </li>
-
-            <li id="photos" class="">
-                <a class="photos">Photos</a>
-            </li>
-
-            <li id="friends" class="">
-                <a class="friends">Friends</a>
-            </li>
-
-        </ul>
-    </nav>
-</div>
-
-<div class="container m-y-md bio_panel">
-
-    <div class="jumbotron">
+    <div class="container">
+    <div class="jumbotron col-md-6 col-xs-12 pull-right">
     <%if(bio){ %>
 
     <p class="profile-header-bio">
@@ -308,7 +293,7 @@
         </p>
     <%}%>
 </div>
-
+    </div>
 </div><!--END OF BIO CONTAINER-->
 <div class="container m-y-md photos_panel collapse" data-grid="images">
     <div>

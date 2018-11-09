@@ -593,6 +593,47 @@ app.post('/search', function (req, res) {
     });
 });
 
+/************************************************WALL ROUTE********************************************/
+
+app.get('/dashboard', function (req, res) {
+    if(session_username){
+
+        // RETRIEVE ALL OF USER INFORMATION
+        mysql_connection.query("SELECT * FROM users WHERE id = ? ", [session_id], function (err, rows) {
+            if(err){
+                res.send(err);
+            } else {
+
+                if(rows.length === 1){
+
+                    for(let i = 0; i < rows.length; i++){
+
+                        let db_first_name = rows[i].first_name;
+                        let db_last_name  = rows[i].last_name;
+                        let db_username   = rows[i].username;
+                        let db_user_bio   = rows[i].user_bio;
+                        let db_profile_picture  = rows[i].profile_picture;
+
+                        res.render("dashboard", {u_id: session_id, username: db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio, user_profile_picture: db_profile_picture, page: "dashboard"});
+
+                    }
+
+                } else {
+                    res.redirect("/login");
+                }
+
+            }
+        });
+
+
+    }else{
+        console.log("No session username found");
+        res.render("login", {logged_in_user: session_username, page: "login"});
+    }
+});
+
+/************************************************END OF WALL ROUTE********************************************/
+
 /*Route error handling*/
 app.get('*', function(req, res) {
     res.send('Oops! The page that you are looking for wasn\'t found.');

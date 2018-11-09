@@ -26,6 +26,30 @@
     border: solid 1px #c3c3c3;
 }
 
+#profile_username{
+    color: black;
+    text-align: center;
+}
+
+#profile_image img{
+    display: block;
+    margin: 0 auto;
+}
+
+#profile_nav_bar a{
+    color: blue;
+}
+
+#profile_background_theme{
+    width: 100%;
+
+}
+
+#profile_background_theme img{
+    width: 100%;
+    height: 350px;
+}
+
 #add_profile_picture_panel {
 
     display: none;

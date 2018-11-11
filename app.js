@@ -278,7 +278,7 @@ app.get("/profile/:id", function (req, res) {
                        let db_user_bio = nl2br(rows[i].user_bio);
                        let profile_picture = rows[i].profile_picture;
 
-                       res.render("profile", {u_id: session_id, username: db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio, user_profile_picture: profile_picture, page: "profile"});
+                       res.render("profile", {u_id: session_id, params_id: get_id, username: db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio, user_profile_picture: profile_picture, page: "profile"});
 
                    }
                }

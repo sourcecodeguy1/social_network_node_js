@@ -54,15 +54,20 @@
 
                             <div class="space space-4"></div>
 
+                            <!--CHECK IF USER IS LOGGED IN AND IF USER IS UNIQUE-->
+                                <% if(logged_in_user && logged_in_user !== username && params_id !== u_id){ %>
                             <a href="#" class="btn btn-sm btn-block btn-success">
                                 <i class="ace-icon fa fa-plus-circle bigger-120"></i>
-                                <span class="bigger-110">Add as a friend</span>
+                                <span class="bigger-110">Add <%= username; %> as a friend</span>
                             </a>
 
                             <a href="#" class="btn btn-sm btn-block btn-primary">
                                 <i class="ace-icon fa fa-envelope-o bigger-110"></i>
-                                <span class="bigger-110">Send a message</span>
+                                <span class="bigger-110">Send <%= username; %> a message</span>
                             </a>
+
+                            <!--END CHECK IF USER IS LOGGED IN AND IF USER IS UNIQUE-->
+                                <%}%>
                         </div><!-- /.col -->
 
                         <div class="col-xs-12 col-sm-9">

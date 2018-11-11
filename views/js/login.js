@@ -26,7 +26,7 @@ $(document).ready(function () {
                         window.location.href = "/profile/" + data.id;
 
                     } else {
-                        error_msg.html(data.msg).slideDown().delay(5000).slideUp();
+                        error_msg.html(data.msg).slideDown().delay(5000).fadeOut();
 
                         scrollToTop();
                     }

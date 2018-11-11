@@ -45,14 +45,14 @@ $(document).ready(function () {
                         window.location.href = "/login";
                     }else if(data.result === "error_username"){
                         errorHandler(username);
-                        error_msg.html(data.msg).slideDown().delay(5000).slideUp();
+                        error_msg.html(data.msg).fadeIn().delay(5000).fadeOut();
                         scrollToTop();
                     } else if(data.result === "error_email"){
                         errorHandler(email);
-                        error_msg.html(data.msg).slideDown().delay(5000).slideUp();
+                        error_msg.html(data.msg).fadeIn().delay(5000).fadeOut();
                         scrollToTop();
                     } else {
-                        error_msg.html(data.msg).slideDown().delay(5000).slideUp();
+                        error_msg.html(data.msg).fadeIn().delay(5000).fadeOut();
                         scrollToTop();
                     }
                 }

@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    $('#flash_msg_success').delay(3000).slideUp();
+    $('#flash_msg_success').delay(3000).fadeOut();
 
     const bio = $('li#bio').attr('class');
     const photos = $('li#photos').attr('class');

@@ -1,6 +1,6 @@
 let mysql = require('mysql');
 
-let mysql_connection = mysql.createPool({
+/*let mysql_connection = mysql.createPool({
     connectionLimit : 100,
     waitForConnections : true,
     queueLimit :0,
@@ -8,6 +8,18 @@ let mysql_connection = mysql.createPool({
     user: 'u853150949_node',
     password: 'shishio1',
     database: 'u853150949_node',
+    debug    :  true,
+    wait_timeout : 28800,
+    connect_timeout :10
+});*/
+let mysql_connection = mysql.createPool({
+    connectionLimit : 100,
+    waitForConnections : true,
+    queueLimit :0,
+    host: 'localhost',
+    user: 'id8139677_root',
+    password: 'shishio1',
+    database: 'id8139677_social_network_nodejs',
     debug    :  true,
     wait_timeout : 28800,
     connect_timeout :10

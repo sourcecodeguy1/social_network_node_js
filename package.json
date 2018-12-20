@@ -1,6 +1,9 @@
 {
   "name": "social_network_node_js",
   "version": "1.0.0",
+  "engines": {
+    "node": "10.13.0"
+  },
   "description": "Node JS Social Network",
   "main": "app.js",
   "scripts": {

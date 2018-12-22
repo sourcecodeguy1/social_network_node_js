@@ -18,7 +18,7 @@ let mysql_connection = mysql.createPool({
     queueLimit :0,
     host: '65.19.141.67',
     user: 'julioweb_root',
-    password: '',
+    password: 'shishio1',
     database: 'julioweb_social_network_nodejs',
     debug    :  true,
     wait_timeout : 28800,

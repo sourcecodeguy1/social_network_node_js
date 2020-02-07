@@ -5,9 +5,9 @@ let mysql_connection = mysql.createPool({
     waitForConnections : true,
     queueLimit :0,
     host: 'localhost',
-    user: '',
-    password: '',
-    database: '',
+    user: 'root',
+    password: 'shishio1',
+    database: 'node_js',
     debug    :  true,
     wait_timeout : 28800,
     connect_timeout :10

@@ -11,7 +11,9 @@ let sendMessage = function sendEmail(user, pass, from, to, subject, text, title,
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-        host: '',
+        host: 'mail.juliowebmaster.com',
+        //port: 587,
+        //secure: false, // true for 465, false for other ports
         auth: {
             user: user, // generated ethereal user
             pass: pass // generated ethereal password

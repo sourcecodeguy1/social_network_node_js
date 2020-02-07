@@ -39,4 +39,8 @@
         $('html, body').animate({
             scrollTop: $('#scroll_top').offset().top
         }, 'slow');
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> bc18b6bc4a213926f8c6c222aaab51a2e5e9ddbd

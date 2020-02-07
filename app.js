@@ -9,10 +9,12 @@ const cookieParser = require('cookie-parser');
 const flash  = require('connect-flash');
 const mysql_connection = require('./db'); // Database connection file.
 
+const sendMessage = require("./send_email_function");
+
 require('dotenv').load();
 
 // SET ENVIRONMENT VARIABLE FOR THE PORT
-let port = process.env.PORT || 3500;
+let port = process.env.PORT || 5500;
 
 app.set('port', (port));
 
@@ -28,6 +30,7 @@ const nl2br = require('nl2br');
 const bcrypt = require('bcrypt');
 
 const session = require('express-session');
+
 
 /*Set global variables for session ID and session username*/
 let session_id;
@@ -61,13 +64,18 @@ app.get("/", function (req, res) {
     res.render("index");
 });
 
+/**LOAD MESSAGE TEMPLATE**/
+app.get('/message', function (req, res) {
+    res.render("message", {page: "message"});
+});
+
 /*Register route*/
 app.get("/register", function (req, res) {
     if(session_username){
-       res.redirect("/profile/" + session_id);
+        res.redirect("/profile/" + session_id);
     }else {
         res.render("register", {u_id: session_id, logged_in_user: session_username, username: '', page: "register"});
-
+        //console.log(sendMessage);
     }
 });
 
@@ -121,7 +129,7 @@ app.post("/register", function (req, res) {
                                         }else{
                                             if(rows.affectedRows === 1){
                                                 console.log("Data has been inserted.");
-
+                                                sendMessage('', '', '', email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.');
                                                 let data_inserted = {result: "success"};
 
                                                 // Create user folder
@@ -136,7 +144,13 @@ app.post("/register", function (req, res) {
                                                         console.log('Default picture copied to user folder successfully!');
 
                                                     });
+
+                                                    /**Send email to the user**/
+
+
+
                                                     res.send(data_inserted);
+
                                                 }else{
                                                     //res.send("An error has occurred!" + err);
                                                     fse.copy('default.png', './public/users/' + username + '/profile_picture/default.png', err => {
@@ -256,35 +270,35 @@ app.get("/profile", function (req, res) {
 /*Route for profile page*/
 app.get("/profile/:id", function (req, res) {
 
-        console.log("Profile username: " + session_username);
+    console.log("Profile username: " + session_username);
 
-        let get_id = req.params.id;
+    let get_id = req.params.id;
 
-        //return res.status(401).send("Oops! The page that you are looking for wasn't found.");
-        mysql_connection.query("SELECT * FROM users WHERE id = ?", [get_id], function (err, rows) {
+    //return res.status(401).send("Oops! The page that you are looking for wasn't found.");
+    mysql_connection.query("SELECT * FROM users WHERE id = ?", [get_id], function (err, rows) {
 
-            if(err){
-                console.log(err);
-                res.send(err);
+        if(err){
+            console.log(err);
+            res.send(err);
+        }else{
+
+            if(rows.length === 0){
+                res.send("That user doesn't exist!!");
             }else{
+                for(let i = 0; i < rows.length; i++){
+                    let db_username = rows[i].username;
+                    let db_first_name = rows[i].first_name;
+                    let db_last_name = rows[i].last_name;
+                    let db_user_bio = nl2br(rows[i].user_bio);
+                    let profile_picture = rows[i].profile_picture;
 
-               if(rows.length === 0){
-                   res.send("That user doesn't exist!!");
-               }else{
-                   for(let i = 0; i < rows.length; i++){
-                       let db_username = rows[i].username;
-                       let db_first_name = rows[i].first_name;
-                       let db_last_name = rows[i].last_name;
-                       let db_user_bio = nl2br(rows[i].user_bio);
-                       let profile_picture = rows[i].profile_picture;
+                    res.render("profile", {u_id: session_id, params_id: get_id, username: db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio, user_profile_picture: profile_picture, page: "profile"});
 
-                       res.render("profile", {u_id: session_id, params_id: get_id, username: db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio, user_profile_picture: profile_picture, page: "profile"});
-
-                   }
-               }
-
+                }
             }
-        });
+
+        }
+    });
 });
 
 /*function nl2br(someText) {
@@ -336,20 +350,20 @@ app.get('/settings', function (req, res) {
 
 app.post('/upload', function (req, res) {
 
-        /*SET STORAGE ENGINE*/
+    /*SET STORAGE ENGINE*/
 
-        let dir = upload_user_path();
+    let dir = upload_user_path();
 
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
-
-
-            return upload_profile_image(req, res);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
 
 
-        } else {
-            return upload_profile_image(req, res);
-        }
+        return upload_profile_image(req, res);
+
+
+    } else {
+        return upload_profile_image(req, res);
+    }
 
 
 });
@@ -362,26 +376,26 @@ function upload_user_path() {
 
 function upload_profile_image(req, res){
 
-        let dir = upload_user_path();
+    let dir = upload_user_path();
 
-        const storage = multer.diskStorage({
+    const storage = multer.diskStorage({
 
-            destination: dir,
-            filename: function (req, file, cb) {
-                cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-            }
-        });
+        destination: dir,
+        filename: function (req, file, cb) {
+            cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        }
+    });
 
-        /*INIT UPLOAD*/
-        const upload = multer({
-            storage: storage,
-            limits: {fileSize: 1000000},
-            fileFilter: function (req, file, cb) {
-                checkFileType(file, cb);
-            }
-        }).single('file_upload');
+    /*INIT UPLOAD*/
+    const upload = multer({
+        storage: storage,
+        limits: {fileSize: 1000000},
+        fileFilter: function (req, file, cb) {
+            checkFileType(file, cb);
+        }
+    }).single('file_upload');
 
-        // Check File Type
+    // Check File Type
     function checkFileType(file, cb){
         // Allow ext
         const filetypes = /jpeg|jpg|png|gif/;
@@ -397,65 +411,65 @@ function upload_profile_image(req, res){
         }
     }
 
-        upload(req, res, function (err) {
-            if (err) {
-                console.log(err);
-                //res.render('settings', {u_id: session_id, logged_in_user: session_username, bio: '', msg: err});
-                res.send(err);
+    upload(req, res, function (err) {
+        if (err) {
+            console.log(err);
+            //res.render('settings', {u_id: session_id, logged_in_user: session_username, bio: '', msg: err});
+            res.send(err);
+        } else {
+
+            if (req.file === undefined) {
+                //res.render('settings', {u_id: session_id, logged_in_user: session_username, bio: '', msg: 'No File Selected!'});
+                res.send('No File Selected!');
             } else {
+                console.log("Success! Picture uploaded!");
 
-                if (req.file === undefined) {
-                    //res.render('settings', {u_id: session_id, logged_in_user: session_username, bio: '', msg: 'No File Selected!'});
-                    res.send('No File Selected!');
-                } else {
-                    console.log("Success! Picture uploaded!");
+                /*UNLINK THE OLD IMAGE IF ANY THEN ADD THE NEW IMAGE*/
+                /*CHECK IF THERE IS AN IMAGE IN THE DATABASE*/
 
-                    /*UNLINK THE OLD IMAGE IF ANY THEN ADD THE NEW IMAGE*/
-                    /*CHECK IF THERE IS AN IMAGE IN THE DATABASE*/
+                mysql_connection.query("SELECT * FROM users WHERE id = ? ", [session_id], function (error, rows) {
+                    if (error) {
+                        res.send(error);
+                    } else {
 
-                    mysql_connection.query("SELECT * FROM users WHERE id = ? ", [session_id], function (error, rows) {
-                        if (error) {
-                            res.send(error);
+                        for (let i = 0; i < rows.length; i++) {
+                            let db_profile_picture = rows[i].profile_picture;
+
+                            //console.log(db_profile_picture);
+
+                            fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
+                                if (err) return console.log(err);
+                                console.log('file deleted successfully');
+                            });
+                        }
+
+                    }
+
+
+                    /*UPDATE THE PROFILE PICTURE TO THE DATABASE*/
+                    mysql_connection.query("UPDATE users SET profile_picture = ? WHERE id = ?", [req.file.filename, session_id], function (err, rows) {
+                        if (err) {
+                            res.send(err);
                         } else {
 
-                            for (let i = 0; i < rows.length; i++) {
-                                let db_profile_picture = rows[i].profile_picture;
+                            if (rows.changedRows === 1) {
 
-                                //console.log(db_profile_picture);
+                                console.log(req.file);
+                                console.log("You new file is " + req.file.filename);
 
-                                fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
-                                    if (err) return console.log(err);
-                                    console.log('file deleted successfully');
-                                });
+                                res.redirect("/profile/" + session_id);
+
+                            } else {
+                                res.send(err);
                             }
 
                         }
-
-
-                        /*UPDATE THE PROFILE PICTURE TO THE DATABASE*/
-                        mysql_connection.query("UPDATE users SET profile_picture = ? WHERE id = ?", [req.file.filename, session_id], function (err, rows) {
-                            if (err) {
-                                res.send(err);
-                            } else {
-
-                                if (rows.changedRows === 1) {
-
-                                    console.log(req.file);
-                                    console.log("You new file is " + req.file.filename);
-
-                                    res.redirect("/profile/" + session_id);
-
-                                } else {
-                                    res.send(err);
-                                }
-
-                            }
-                        });
-
                     });
-                }
+
+                });
             }
-        });
+        }
+    });
 
 }
 
@@ -515,6 +529,7 @@ app.post('/delete', function (req, res) {
             res.send(err);
         }else{
             if(row.affectedRows === 1){
+                sendMessage('postmaster@ddrguy2.juliowebmaster.com', 'shishio1', '"Postmaster" <postmaster@ddrguy2.juliowebmaster.com>', 'juliowebmaster1@gmail.com', 'Deleted Account', 'Account deleted', 'ddrguy2 - Account Deleted', 'Deleted Account', session_username, 'We\'re sorry to see you go. Thank you for trying out ddrguy2.', 'You\'re account has been completely removed. Account recovery is not possible.');
                 removeUserFolder();
                 let delete_message = {result: "success", username: session_username};
                 res.send(delete_message);
@@ -640,12 +655,12 @@ app.get('*', function(req, res) {
 });
 
 function removeUserFolder(){
-     fse.remove('./public/users/' + session_username , function () {
-       console.log( session_username + "'s" + " folder was removed!");
-   } );
+    fse.remove('./public/users/' + session_username , function () {
+        console.log( session_username + "'s" + " folder was removed!");
+    } );
 }
 
 //Listen the port here
 app.listen(app.get('port'), function () {
-   console.log("Server started at port " + port);
+    console.log("Server started at port " + port + " with https.");
 });

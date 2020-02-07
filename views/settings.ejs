@@ -1,0 +1,170 @@
+<!--ADD TITLE TO FOR THE PAGE-->
+<% var title = "Settings" %>
+
+<!--ADD THE TOP TEMPLATE-->
+<% include ../partials/top.ejs %>
+
+<!--SETTINGS CONTENT GOES HERE-->
+
+<div class="container"><!--MAIN CONTAINER-->
+
+    <!--PROFILE PICTURE WRAPPER-->
+    <div id="profile_picture_wrapper">
+
+    <div id="add_profile_picture_title"><strong>Add Profile Picture</strong></div>
+    <div id="add_profile_picture_panel">
+
+        <div><%= typeof msg !== 'undefined' ? msg : '' %></div>
+        <form id="frm_upload_profile_picture" action="/upload" method="post" enctype="multipart/form-data">
+
+            <p id="error_pic_upload_handler" class="alert-danger"></p><!--jQuery error handler-->
+            <p id="success_pic_upload_handler" style="background-color: #00AA88; color: white;"></p><!--jQuery success handler-->
+
+            <input type="file" name="file_upload" id="txt_file_upload"><br />
+
+            <button id="btn_upload_profile_picture" type="submit" class="btn btn-primary">Upload Profile Picture</button>
+        </form>
+
+
+
+    </div>
+
+    </div>
+    <!--END OF PROFILE PICTURE WRAPPER-->
+    <br />
+    <!--UPDATE PASSWORD-->
+    <div id="update_password_wrapper">
+
+        <div id="update_password_title"><strong>Update Password</strong></div>
+        <div id="update_password_panel"><br />
+            <form id="" action="#" method="post">
+                <div class="py-5" >
+                        <div class="row">
+
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <p id="error_password_handler" class="alert-danger"></p><!--jQuery error handler-->
+                                <p id="success_password_handler" style="background-color: #00AA88; color: white;"></p><!--jQuery success handler-->
+                                <form class="">
+                                    <div class="form-group">
+                                        <input id="txt_old_password" name="old_password" type="text" class="form-control" placeholder="Enter old password"> </div>
+                                    <div class="form-group">
+                                        <input id="txt_new_password" name="new_password" type="password" class="form-control" placeholder="Enter new password"> </div>
+                                    <div class="form-group">
+                                        <input id="txt_confirm_password" name="confirm_password" type="password" class="form-control" placeholder="Confirm Password"> </div>
+                                    <button type="button" class="btn btn-primary">Update Password</button>
+                                </form>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+
+                </div>
+
+            </form>
+        </div>
+
+    </div><br />
+    <!--END UPDATE PASSWORD WRAPPER-->
+
+    <!--ADD OR UPDATE BIO-->
+
+    <div id="add_update_bio_title"><strong><%= typeof bio !== 'undefined' && bio !== '' ? 'Update Bio' : 'Add Bio'%></strong></div>
+    <div id="add_update_bio_panel">
+
+        <form id="frm_add_update_bio" action="/bio_post" method="post"><br />
+            <div class="py-5 w-100">
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <p id="error_bio_handler" class="alert alert-danger collapse"></p><!--jQuery error handler-->
+                            <p id="success_bio_handler" class="alert alert-success collapse"></p><!--jQuery success handler-->
+                            <form class="">
+                                <div class="form-group">
+                                    <!--Check if user has entered a bio-->
+                                    <div class="alert-danger"><%= typeof bio_msg !== 'undefined' ? bio_msg : '' %></div><br />
+                                    <% if (bio){%>
+
+                                    <textarea class="form-control" rows="5" id="user_bio" name="user_bio" placeholder="Write a little something about yourself"><%- bio%></textarea>
+
+                                    <%} else{%>
+
+                                    <textarea class="form-control" rows="5" id="user_bio" name="user_bio" placeholder="Write a little something about yourself"></textarea>
+
+                                    <%}%>
+                                </div>
+                                <div class="form-group"></div>
+                                <div class="form-group"></div>
+                                <button id="btnSubmitBio" type="button" class="btn btn-primary">Add or Update Bio</button>
+                            </form>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+            </div>
+        </form>
+    </div><br />
+
+    <!--END ADD OR UPDATE BIO-->
+
+    <!--DELETE USER PROFILE-->
+
+    <div id="delete_account_title"><strong>DELETE ACCOUNT</strong></div>
+    <div id="delete_account_panel">
+
+        <form id="frm_delete_account" action="/delete" method="post"><br />
+            <div class="py-5 w-100">
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <p id="error_delete_account_handler" class="alert-danger collapse">Error</p><!--jQuery error handler-->
+                        <p id="success_delete_account_handler" class="collapse" style="background-color: #00AA88; color: white;"></p><!--jQuery success handler-->
+                        <form class="">
+                            <input style="color: red" type="text" id="hidden_input_delete_account" value="<%= logged_in_user %>" hidden>
+                            <button id="btnDelete" type="button" class="btn btn-danger">DELETE ACCOUNT</button>
+                        </form>
+                    </div>
+                    <div class="col-md-4"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!--MODAL ALERT MESSAGE BOX-->
+
+    <div class="modal collapse modal_alert" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">DDRGUY</h5>
+                    <button id="modal_x_btn" type="button" class="close" data-dismiss="modal">
+                        <span>×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="modal_message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button id="modal_ok_btn" type="button" class="btn btn-danger">OK</button>
+                    <button id="modal_cancel_btn" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--END OF MODAL ALERT MESSAGE BOX-->
+
+    <!--END DELETE USER PROFILE-->
+
+</div><!--END MAIN CONTAINER-->
+
+<!--END OF SETTING CONTENT-->
+
+<!--ADD SETTINGS' JAVASCRIPT FILE-->
+<script src="../assets/js/settings/settings.js"></script>
+
+<!--ADD BIO JS FILE-->
+<script src="../views/js/bio.js"></script>
+<!--ADD DELETE JS FILE-->
+<script src="../views/js/delete.js"></script>
+<!--ADD THE FOOTER TEMPLATE-->
+<% include ../partials/bottom.ejs %>
+

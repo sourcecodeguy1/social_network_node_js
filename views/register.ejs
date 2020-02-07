@@ -1,0 +1,62 @@
+<% var title = "Register"; %>
+
+<% include ../partials/top.ejs %>
+
+<div class="container-fluid container-fill-height register_container">
+
+    <div class="container-content-middle">
+
+
+
+        <!--LOGO GOES HERE-->
+
+        <div style="margin-bottom: 100px">
+            <img src="../DDRGUY_LOGO.png" alt="Logo" style="margin-left: auto; margin-right: auto; display: block">
+
+        </div>
+
+        <!--END OF LOGO CODE-->
+
+        <form action="/register" method="post" role="form" class="m-x-auto text-center app-login-form">
+            <!--First name field-->
+            <div class="form-group"><br />
+                <input name="first_name" id="txt_first_name" class="form-control" placeholder="First name" type="text">
+            </div>
+
+            <!--Last name field-->
+            <div class="form-group">
+                <input name="last_name" id="txt_last_name" class="form-control" placeholder="Last name" type="text">
+            </div>
+
+            <!--E-mail field-->
+            <div class="form-group">
+                <input name="email" id="txt_email" class="form-control" placeholder="E-mail address" type="email" required>
+            </div>
+
+            <!--Username field-->
+            <div class="form-group">
+                <input name="username" id="txt_username" class="form-control" placeholder="Username" type="text">
+            </div>
+
+            <!--Password field-->
+            <div class="form-group m-b-md">
+                <input name="password" id="txt_password" type="password" class="form-control" placeholder="Password">
+            </div>
+
+            <!--Text area field-->
+            <div class="form-group m-b-md">
+                <textarea name="user_bio" id="txt_user_bio" cols="35" rows="5" placeholder="Enter a short description about you"></textarea>
+            </div>
+
+            <!--Register button-->
+            <div class="m-b-lg">
+                <button id="btn_register" class="btn btn-primary">Register</button>
+                <div id="register_login_here">Already a member? Login <a href="/login">here</a></div>
+            </div>
+
+
+        </form>
+    </div>
+</div>
+
+<% include ../partials/bottom.ejs %>

@@ -1,0 +1,23 @@
+<div class="container text-center">
+    <footer id="my_footer" class="screen-login my_footer">
+        &copy;&nbsp;DDRGUY&nbsp;<%= new Date().getFullYear(); %>
+    </footer>
+</div>
+</body>
+
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/chart.js"></script>
+<script src="../assets/js/toolkit.js"></script>
+<script src="../assets/js/application.js"></script>
+<script>
+    // execute/clear BS loaders for docs
+    $(function(){
+        if (window.BS&&window.BS.loader&&window.BS.loader.length) {
+            while(BS.loader.length){(BS.loader.pop())()}
+        }
+    })
+</script>
+
+<script src="../index.js"></script>
+
+</html>

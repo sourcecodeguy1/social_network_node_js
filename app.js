@@ -7,9 +7,12 @@ const multer = require('multer');
 const rimraf = require('rimraf');
 const cookieParser = require('cookie-parser');
 const flash  = require('connect-flash');
-const mysql_connection = require('./db'); // Database connection file.
 
 const Credentials = require('./credentials');
+
+const mysql_connection = require('./db'); // Database connection file.
+
+
 const sendMessage = require("./send_email_function");
 
 require('dotenv').load();

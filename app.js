@@ -8,8 +8,6 @@ const rimraf = require('rimraf');
 const cookieParser = require('cookie-parser');
 const flash  = require('connect-flash');
 
-const Credentials = require('./credentials');
-
 const mysql_connection = require('./db'); // Database connection file.
 
 

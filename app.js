@@ -535,7 +535,7 @@ app.post('/delete', function (req, res) {
             res.send(err);
         }else{
             if(row.affectedRows === 1){
-                sendMessage('postmaster@ddrguy2.juliowebmaster.com', 'shishio1', '"Postmaster" <postmaster@ddrguy2.juliowebmaster.com>', session_email, 'Deleted Account', 'Account deleted', 'ddrguy2 - Account Deleted', 'Deleted Account', session_username, 'We\'re sorry to see you go. Thank you for trying out ddrguy2.', 'You\'re account has been completely removed. Account recovery is not possible.');
+                sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, session_email, 'Deleted Account', 'Account deleted', 'ddrguy2 - Account Deleted', 'Deleted Account', session_username, 'We\'re sorry to see you go. Thank you for trying out ddrguy2.', 'You\'re account has been completely removed. Account recovery is not possible.');
                 removeUserFolder();
                 let delete_message = {result: "success", username: session_username};
                 res.send(delete_message);
@@ -560,6 +560,7 @@ app.get('/deleted', function (req, res) {
                 if(rows.length === 0){
                     session_id = null;
                     session_username = null;
+                    session_email = null;
                     req.flash("success", "Your account has been deleted.");
                     res.redirect("/login");
                 } else {

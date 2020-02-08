@@ -1,13 +1,14 @@
 let mysql = require('mysql');
+let cred = require('./credentials');
 
 let mysql_connection = mysql.createPool({
     connectionLimit : 100,
     waitForConnections : true,
     queueLimit :0,
-    host: '',
-    user: '',
-    password: '',
-    database: '',
+    host: cred.db_host,
+    user: cred.db_user,
+    password: cred.db_pass,
+    database: cred.db_name,
     debug    :  true,
     wait_timeout : 28800,
     connect_timeout :10

@@ -21,7 +21,7 @@ mysql_connection.getConnection(function (err) {
         console.log("You have connected to the database successfully.");
     }
 });
-
+//
 module.exports = mysql_connection;
 
 

@@ -10,6 +10,7 @@ const flash  = require('connect-flash');
 
 const mysql_connection = require('./db'); // Database connection file.
 
+require('dotenv').config();
 
 const sendMessage = require("./send_email_function");
 
@@ -132,7 +133,7 @@ app.post("/register", function (req, res) {
                                         }else{
                                             if(rows.affectedRows === 1){
                                                 console.log("Data has been inserted.");
-                                                sendMessage(Credentials.user, Credentials.pass, 'Postmaster" <postmaster@ddrguy2.juliowebmaster.com>', email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.');
+                                                sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, 'Postmaster" <postmaster@ddrguy2.juliowebmaster.com>', email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.');
                                                 let data_inserted = {result: "success"};
 
                                                 // Create user folder

@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+require('dotenv').config();
 /**CREATE A FUNCTION TO HANDLE THE E-MAIL SENDING STUFF**/
 
 /**
@@ -11,7 +12,7 @@ let sendMessage = function sendEmail(user, pass, from, to, subject, text, title,
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-        host: '',
+        host: process.env.MAIL_HOST,
         auth: {
             user: user, // generated ethereal user
             pass: pass // generated ethereal password

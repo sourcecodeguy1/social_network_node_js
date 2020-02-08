@@ -12,7 +12,7 @@ let sendMessage = function sendEmail(user, pass, from, to, subject, text, title,
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-        host: process.env.MAIL_HOST,
+        host: 'mail.juliowebmaster.com',
         auth: {
             user: user, // generated ethereal user
             pass: pass // generated ethereal password

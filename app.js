@@ -133,7 +133,7 @@ app.post("/register", function (req, res) {
                                         }else{
                                             if(rows.affectedRows === 1){
                                                 console.log("Data has been inserted.");
-                                                console.log(sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.'));
+                                                console.log(sendMessage('postmaster@ddrguy2.juliowebmaster.com', 'shishio1', '"Postmaster" <postmaster@ddrguy2.juliowebmaster.com>', email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.'));
                                                 let data_inserted = {result: "success"};
 
                                                 // Create user folder

@@ -34,10 +34,7 @@ $(document).ready(function () {
             errorHandler(password);
         } else {
             console.log("Done!");
-<<<<<<< HEAD
 
-=======
->>>>>>> bc18b6bc4a213926f8c6c222aaab51a2e5e9ddbd
             // Ajax call goes here.
             $.ajax({
                 url: "/register",
@@ -45,10 +42,8 @@ $(document).ready(function () {
                 data: {first_name: firstName.val(), last_name: lastName.val(), email: email.val(), username: username.val(), password: password.val(), user_bio: user_bio.val()},
                 success: function (data) {
                     if(data.result === "success"){
-<<<<<<< HEAD
-=======
+
                         /**Send email to the user**/
->>>>>>> bc18b6bc4a213926f8c6c222aaab51a2e5e9ddbd
                         window.location.href = "/login";
                     }else if(data.result === "error_username"){
                         errorHandler(username);

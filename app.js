@@ -35,6 +35,7 @@ const session = require('express-session');
 /*Set global variables for session ID and session username*/
 let session_id;
 let session_username;
+let session_email;
 
 
 app.use(bodyparser.urlencoded({extended: false}));
@@ -225,6 +226,7 @@ app.post("/login", function (req, res) {
                         let db_id = rows[i].id;
                         let db_user = rows[i].username;
                         let db_pass = rows[i].password;
+                        let db_email = rows[i].email;
                         // Compare passwords between user input and database encryption.
                         bcrypt.compare(password, db_pass, function (err, result) {
                             if (result) {
@@ -234,12 +236,13 @@ app.post("/login", function (req, res) {
                                 // Store the current logged in user in a session.
                                 session_id = req.session.rows = db_id;
                                 session_username = req.session.rows = db_user;
+                                session_email = req.session.rows = db_email;
 
                                 req.flash("success", "Welcome, " + session_username );
 
                                 let _result = {result: "success", id: session_id};
 
-                                console.log("session_id " + session_id + " session_username " + session_username);
+                                console.log("session_id " + session_id + " session_username " + session_username + " email " + session_email);
                                 //res.redirect("/profile/" + session_id);
                                 res.send(_result);
 
@@ -529,7 +532,7 @@ app.post('/delete', function (req, res) {
             res.send(err);
         }else{
             if(row.affectedRows === 1){
-                sendMessage('postmaster@ddrguy2.juliowebmaster.com', 'shishio1', '"Postmaster" <postmaster@ddrguy2.juliowebmaster.com>', 'juliowebmaster1@gmail.com', 'Deleted Account', 'Account deleted', 'ddrguy2 - Account Deleted', 'Deleted Account', session_username, 'We\'re sorry to see you go. Thank you for trying out ddrguy2.', 'You\'re account has been completely removed. Account recovery is not possible.');
+                sendMessage('postmaster@ddrguy2.juliowebmaster.com', 'shishio1', '"Postmaster" <postmaster@ddrguy2.juliowebmaster.com>', session_email, 'Deleted Account', 'Account deleted', 'ddrguy2 - Account Deleted', 'Deleted Account', session_username, 'We\'re sorry to see you go. Thank you for trying out ddrguy2.', 'You\'re account has been completely removed. Account recovery is not possible.');
                 removeUserFolder();
                 let delete_message = {result: "success", username: session_username};
                 res.send(delete_message);

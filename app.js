@@ -644,7 +644,8 @@ app.get('/dashboard', function (req, res) {
 
     }else{
         console.log("No session username found");
-        res.render("login", {logged_in_user: session_username, page: "login"});
+        //res.render("login", {logged_in_user: session_username, page: "login"});
+        res.redirect('/login');
     }
 });
 

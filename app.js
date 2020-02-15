@@ -747,8 +747,15 @@ app.post('/forgotpass', function (req, res) {
 /**Create new password route**/
 
 app.get('/create-new-password/:token', function (req, res) {
-    let token = req.params.token;
-    res.render("create-new-password", {token: token, logged_in_user: "", page: "Create New Password"});
+    if(session_username){
+        res.redirect("/profile/" + session_id);
+    }else {
+
+        let token = req.params.token;
+        res.render("create-new-password", {token: token, logged_in_user: "", page: "Create New Password"});
+
+    }
+
 });
 
 /**End of create new password route**/

@@ -715,7 +715,7 @@ app.post('/forgotpass', function (req, res) {
                                                         res.send("An error has occurred, please try again later.");
                                                     } else {
                                                         res.send("Successfully inserted");
-                                                        sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Forgot Password', 'Forgot Password Request', 'ddrguy2 - Forgot Password', 'A forgot password was requested for ', user_name, 'Use the link below to reset your password.', '<a href="/login">Login</a>');
+                                                        sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Forgot Password', 'Forgot Password Request', 'ddrguy2 - Forgot Password', 'Forgot Password ', user_name, 'Use the link below to reset your password.', '<a href="https://ddrguy2.juliowebmaster.com/login">Login</a>');
 
                                                     }
 

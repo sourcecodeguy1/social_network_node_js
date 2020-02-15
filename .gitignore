@@ -1,4 +1,4 @@
 .idea
 node_modules/
-./db.js
-./credentials.js
+public/users
+db.js

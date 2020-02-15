@@ -7,7 +7,7 @@ const multer = require('multer');
 const rimraf = require('rimraf');
 const cookieParser = require('cookie-parser');
 const flash  = require('connect-flash');
-
+const randomGenerator = require('./functions/randomGenerator');
 const mysql_connection = require('./db'); // Database connection file.
 
 require('dotenv').config();
@@ -608,6 +608,138 @@ app.post('/search', function (req, res) {
         }
     });
 });
+
+/**Forgot Password Route**/
+
+app.get('/forgotpass', function (req, res) {
+
+    res.render('forgotpass', {page: "Forgot Password", logged_in_user: ""});
+
+});
+
+app.post('/forgotpass', function (req, res) {
+
+    let email = req.body.email;
+
+    let code  = randomGenerator();
+
+    const oneMinute = Date.now() + 60000;
+    //console.log(oneMinute);
+    let codeExpires = oneMinute; // 1 hour
+
+    console.log(codeExpires);
+
+    if(email !== ""){
+
+
+        let sql = "SELECT * FROM users WHERE email = ?";
+
+            mysql_connection.query(sql, [email], function (error, rows) {
+
+                if(error){
+                    res.send(error);
+                } else {
+
+                    if(rows.length === 0){
+
+                       res.send("We have no record by that email.");
+
+
+                    } else {
+
+                        /** Check if there isn't an earlier requested forgot password**/
+
+                        let sql = "SELECT * FROM forgot_pass_tbl WHERE email = ?";
+
+                        mysql_connection.query(sql, [email], function (error, rows) {
+
+                            if(error){
+                                res.send(error);
+                            } else {
+
+                                if(rows.length === 1){
+
+                                    res.send("Please check your email for instructions on how to reset your password");
+
+
+                                } else {
+
+                                    let user_id = null;
+                                    let user_name = null;
+
+                                    /**
+                                        CREATE DATE, TIME, AND YEAR VARIABLES
+                                     **/
+
+                                    let months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+
+                                    let fullYear = new Date();
+                                    let month = new Date();
+                                    let day = new Date();
+                                    let hour = new Date();
+                                    let minute = new Date();
+                                    let seconds = new Date();
+
+                                    let yyyy = fullYear.getFullYear();
+                                    let mm = months[month.getMonth()];
+                                    let dd = day.getDate();
+                                    let hh = hour.getHours();
+                                    let _mm = minute.getMinutes();
+                                    let ss = seconds.getSeconds();
+
+                                    let completeDateTimeYear = yyyy+"-"+mm+"-"+dd+" "+hh+":"+_mm+":"+ss;
+
+                                    let sql = "SELECT id FROM users WHERE email = ?";
+
+                                    mysql_connection.query(sql, [email], function (error, rows) {
+
+                                        if(error){
+                                            res.send(error);
+
+                                        } else {
+                                            for(let i = 0; i < rows.length; i++){
+
+                                                user_id = rows[i].id;
+                                                user_name = rows[i].username;
+                                            }
+                                            //console.log(user_id);
+
+                                            let insert_sql = "INSERT INTO forgot_pass_tbl (code, expiration, user_id, email, created_at) VALUES (?,?,?,?,?)";
+                                            mysql_connection.query(insert_sql, [code, codeExpires, user_id, email, completeDateTimeYear], function (error, rows) {
+
+                                                if(error){
+                                                    res.send(error);
+                                                } else {
+
+                                                    if(rows.affectedRows === 0){
+                                                        res.send("An error has occurred, please try again later.");
+                                                    } else {
+                                                        res.send("Successfully inserted");
+                                                        sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, session_email, 'Forgot Password', 'Forgot Password Request', 'ddrguy2 - Forgot Password', 'A forgot password was requested for ', user_name, 'Use the link below to reset your password.', '<a href="/login"></a>');
+
+                                                    }
+
+                                                }
+
+                                            });
+
+                                        }
+                                    });
+                                }
+
+                            }
+
+                        });
+                    }
+                }
+            });
+
+    } else {
+        res.send("Please enter your email to reset your password.");
+    }
+});
+
+/**End Forgot Password Route**/
 
 /************************************************WALL ROUTE********************************************/
 

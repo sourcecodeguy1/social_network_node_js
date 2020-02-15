@@ -718,7 +718,7 @@ app.post('/forgotpass', function (req, res) {
                                                         sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Forgot Password',
                                                             'Forgot Password Request', 'ddrguy2 - Forgot Password', 'Forgot Password ', user_name,
                                                             'Use the link below to reset your password. If you did not request a password reset, then you can discard this message and your password will be unchanged.',
-                                                            '<a href="https://ddrguy2.juliowebmaster.com/login">Login</a>');
+                                                            '<a href="https://ddrguy2.juliowebmaster.com/create-new-password/"'+code+'>Login</a>');
 
                                                     }
 
@@ -750,6 +750,8 @@ app.get('/create-new-password/:token', function (req, res) {
     if(session_username){
         res.redirect("/profile/" + session_id);
     }else {
+
+        /**RUN A QUERY TO THE DATABASE TO COMPARE THE URL TOKEN WITH THE USER'S TOKEN**/
 
         let token = req.params.token;
         res.render("create-new-password", {token: token, logged_in_user: "", page: "Create New Password"});

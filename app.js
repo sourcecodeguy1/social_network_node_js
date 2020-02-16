@@ -750,11 +750,44 @@ app.get('/create-new-password/:token', function (req, res) {
     if(session_username){
         res.redirect("/profile/" + session_id);
     }else {
+        let time = Date.now();
+        let token = req.params.token;
+        res.render("create-new-password", {token: token, logged_in_user: "", page: "Create New Password"});
 
         /**RUN A QUERY TO THE DATABASE TO COMPARE THE URL TOKEN WITH THE USER'S TOKEN**/
 
-        let token = req.params.token;
-        res.render("create-new-password", {token: token, logged_in_user: "", page: "Create New Password"});
+        let sql = "SELECT * FROM forgot_pass_tbl WHERE code = ?";
+        mysql_connection.query(sql, [token], function (error, rows) {
+
+            if(error){
+                res.send(error);
+            } else {
+
+                if(rows.length === 1){
+
+                    for(let i = 0; i < rows.length; i++){
+
+                        let db_token = rows[i].code;
+                        let db_expiration = rows[i].expiration;
+                        if(token === db_token){
+
+                            if(time < db_expiration){
+                                res.send("You can still reset your password.");
+                            } else{
+                                res.send("Password reset link is invalid or has expired");
+                            }
+
+                        } else {
+                            res.send("Password reset link is invalid or has expired");
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 

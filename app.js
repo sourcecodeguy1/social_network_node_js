@@ -615,41 +615,6 @@ app.get('/forgotpass', function (req, res) {
 
     res.render('forgotpass', {page: "Forgot Password", logged_in_user: ""});
 
-    let time = Date.now();
-
-    let sql = "SELECT * FROM forgot_pass_tbl";
-
-    mysql_connection.query(sql, function (rows) {
-
-        for(let i = 0; i < rows.length; i++){
-
-            let db_expiration = rows[i].expiration;
-            res.send(db_expiration);
-            /*if(time > db_expiration){
-
-                let delete_sql = "DELETE FROM forgot_pass_tbl WHERE expiration = ?";
-                mysql_connection.query(delete_sql, [db_expiration], function (error, rows) {
-
-                    if(error){
-                        res.send(error);
-                    } else {
-
-                        if(rows.affectedRows === 1){
-                            res.send("Deleted!!");
-                        } else {
-                            res.send('Not deleted');
-                        }
-
-                    }
-
-                });
-
-            }*/
-
-        }
-
-    });
-
 });
 
 app.post('/forgotpass', function (req, res) {

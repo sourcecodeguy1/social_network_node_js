@@ -768,6 +768,7 @@ app.get('/create-new-password/:token', function (req, res) {
 
                         let db_token = rows[i].code;
                         let db_expiration = rows[i].expiration;
+
                         if(token === db_token){
 
                             if(time < db_expiration){
@@ -778,16 +779,10 @@ app.get('/create-new-password/:token', function (req, res) {
 
                                 /**Delete the expired entry from the database**/
                                 let delete_sql = "DELETE FROM forgot_pass_tbl WHERE code = ?";
-                                mysql_connection.query(delete_sql, [token], function (error, rows) {
+                                mysql_connection.query(delete_sql, [token], function (error) {
 
                                     if(error){
                                         res.send(error);
-                                    } else {
-
-                                        if(rows.affectedRows === 1){
-                                            console.log("Deleted!");
-                                        }
-
                                     }
 
                                 });

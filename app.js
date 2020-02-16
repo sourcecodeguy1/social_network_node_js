@@ -782,6 +782,8 @@ app.get('/create-new-password/:token', function (req, res) {
 
                     }
 
+                } else {
+                    res.send("Password reset link is invalid or has expired");
                 }
 
             }

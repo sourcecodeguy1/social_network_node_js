@@ -628,7 +628,21 @@ app.get('/forgotpass', function (req, res) {
             if(time > db_expiration){
 
                 let delete_sql = "DELETE FROM forgot_pass_tbl WHERE expiration = ?";
-                mysql_connection.query(delete_sql, [db_expiration]);
+                mysql_connection.query(delete_sql, [db_expiration], function (error, rows) {
+
+                    if(error){
+                        res.send(error);
+                    } else {
+
+                        if(rows.affectedRows === 1){
+                            res.send("Deleted!!");
+                        } else {
+                            res.send('Not deleted');
+                        }
+
+                    }
+
+                });
 
             }
 

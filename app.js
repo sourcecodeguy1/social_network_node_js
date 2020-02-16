@@ -773,7 +773,24 @@ app.get('/create-new-password/:token', function (req, res) {
                             if(time < db_expiration){
                                 res.render("create-new-password", {token: token, logged_in_user: "", page: "Create New Password"});
                             } else{
+
                                 res.send("Password reset link is invalid or has expired");
+
+                                /**Delete the expired entry from the database**/
+                                let delete_sql = "DELETE FROM forgot_pass_tbl WHERE code = ?";
+                                mysql_connection.query(delete_sql, [token], function (error, rows) {
+
+                                    if(error){
+                                        res.send(error);
+                                    } else {
+
+                                        if(rows.affectedRows === 1){
+                                            console.log("Deleted!");
+                                        }
+
+                                    }
+
+                                });
                             }
 
                         } else {

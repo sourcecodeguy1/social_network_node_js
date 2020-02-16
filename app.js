@@ -670,7 +670,7 @@ app.post('/forgotpass', function (req, res) {
                                         } else {
 
                                             let delete_query = "DELETE FROM forgot_pass_tbl WHERE email = ?";
-                                            mysql_connection.query(delete_query, [email], );
+                                            mysql_connection.query(delete_query, [email]);
 
                                         }
 

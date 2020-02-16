@@ -771,7 +771,7 @@ app.get('/create-new-password/:token', function (req, res) {
 
                         if(token === db_token){
 
-                            if(time < db_expiration){
+                            if(db_expiration < time){
                                 res.render("create-new-password", {token: token, logged_in_user: "", page: "Create New Password"});
                             } else{
 

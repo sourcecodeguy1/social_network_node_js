@@ -752,7 +752,6 @@ app.get('/create-new-password/:token', function (req, res) {
     }else {
         let time = Date.now();
         let token = req.params.token;
-        res.render("create-new-password", {token: token, logged_in_user: "", page: "Create New Password"});
 
         /**RUN A QUERY TO THE DATABASE TO COMPARE THE URL TOKEN WITH THE USER'S TOKEN**/
 
@@ -772,7 +771,7 @@ app.get('/create-new-password/:token', function (req, res) {
                         if(token === db_token){
 
                             if(time < db_expiration){
-                                res.send("You can still reset your password.");
+                                res.render("create-new-password", {token: token, logged_in_user: "", page: "Create New Password"});
                             } else{
                                 res.send("Password reset link is invalid or has expired");
                             }

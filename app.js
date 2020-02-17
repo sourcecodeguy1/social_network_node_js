@@ -625,11 +625,9 @@ app.post('/forgotpass', function (req, res) {
 
     let code  = randomGenerator();
 
-    const oneMinute = Date.now() + 60000;
-    //console.log(oneMinute);
-    let codeExpires = oneMinute; // 1 hour
+    const oneHour = Date.now() + 3600000;
 
-    console.log(codeExpires);
+    let codeExpires = oneHour; // 1 hour
 
     if(email !== ""){
 
@@ -644,8 +642,8 @@ app.post('/forgotpass', function (req, res) {
 
                     if(rows.length === 0){
 
-                       res.send("We have no record by that email.");
-
+                        let notExists = {result: "error", msg: "We have no record by that email."};
+                        res.send(notExists);
 
                     } else {
 
@@ -661,7 +659,8 @@ app.post('/forgotpass', function (req, res) {
 
                                 if(rows.length === 1){
 
-                                    res.send("Please check your email for instructions on how to reset your password");
+                                    let exists = {result: "error", msg: "Please check your email for instructions on how to reset your password."};
+                                    res.send(exists);
 
                                 } else {
 
@@ -703,7 +702,6 @@ app.post('/forgotpass', function (req, res) {
                                                 user_id = rows[i].id;
                                                 user_name = rows[i].username;
                                             }
-                                            //console.log(user_id);
 
                                             let insert_sql = "INSERT INTO forgot_pass_tbl (code, expiration, user_id, email, created_at) VALUES (?,?,?,?,?)";
                                             mysql_connection.query(insert_sql, [code, codeExpires, user_id, email, completeDateTimeYear], function (error, rows) {
@@ -713,13 +711,21 @@ app.post('/forgotpass', function (req, res) {
                                                 } else {
 
                                                     if(rows.affectedRows === 0){
-                                                        res.send("An error has occurred, please try again later.");
+
+                                                        let affected_rows = {result: "error", msg: "An error has occurred, please try again later."};
+
+                                                        res.send(affected_rows);
                                                     } else {
-                                                        res.send("Successfully inserted");
+
+                                                        req.flash("success", "Success! An email has been sent to "+ email);
+
+                                                        let result = {result: "success"};
+
+                                                        res.send(result);
                                                         sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Forgot Password',
                                                             'Forgot Password Request', 'ddrguy2 - Forgot Password', 'Forgot Password ', user_name,
                                                             'Use the link below to reset your password. If you did not request a password reset, then you can discard this message and your password will remain unchanged.' +
-                                                            ' <br /><b>This link will expire in 1 hour</b>',
+                                                            '<b>This link will expire in 1 hour</b>',
                                                             '<a href="https://ddrguy2.juliowebmaster.com/create-new-password/'+code+'">Reset Password</a>');
 
                                                     }

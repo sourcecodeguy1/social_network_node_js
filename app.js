@@ -10,6 +10,8 @@ const flash  = require('connect-flash');
 const randomGenerator = require('./functions/randomGenerator');
 const mysql_connection = require('./db'); // Database connection file.
 
+require('./functions/forgot_pass_cron');
+
 require('dotenv').config();
 
 const sendMessage = require("./send_email_function");

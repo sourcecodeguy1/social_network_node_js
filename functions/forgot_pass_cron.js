@@ -1,4 +1,4 @@
-const mysql_connection = require('./db'); // Database connection file.
+/*const mysql_connection = require('./db'); // Database connection file.
 
 let time = Date.now();
 
@@ -19,5 +19,6 @@ mysql_connection.query(sql, function (rows) {
 
     }
 
-});
+});*/
 
+console.log("This is forgot_pass_cron js file.");

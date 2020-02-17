@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const mysql_connection = require('../db'); // Database connection file.
 
- let cronSchedule = cron.schedule('* */1 * * *', () => {
+ let cronSchedule = cron.schedule('0 */1 * * *', () => {
 
     //console.log('running a task every 10 seconds.');
 

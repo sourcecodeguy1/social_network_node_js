@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const mysql_connection = require('../db'); // Database connection file.
 
- let cronSchedule = cron.schedule('*/10 * * * * *', () => {
+ let cronSchedule = cron.schedule('* * */1 * * *', () => {
 
     //console.log('running a task every 10 seconds.');
 
@@ -22,12 +22,14 @@ const mysql_connection = require('../db'); // Database connection file.
 
                 for(i = 0; i < rows.length; i++){
 
-                    let db_expired_code = rows[i].expiration;
+                    let token = rows[i].expiration;
 
-                    if(time > db_expired_code){
+                    if(time > token){
+
+                        let expiredToken = token;
 
                         let delete_sql = "DELETE FROM forgot_pass_tbl WHERE expiration = ?";
-                        mysql_connection.query(delete_sql, [db_expired_code], function (error, rows) {
+                        mysql_connection.query(delete_sql, [expiredToken], function (error, rows) {
 
                             if (error){
                                 console.log(error);

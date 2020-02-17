@@ -659,23 +659,7 @@ app.post('/forgotpass', function (req, res) {
 
                                 if(rows.length === 1){
 
-                                    for(let i = 0; i < rows.length; i++){
-
-                                        let db_expired_token = rows[i].expiration;
-
-                                        if(Date.now() < db_expired_token){
-
-                                            res.send("Please check your email for instructions on how to reset your password");
-
-                                        } else {
-
-                                            let delete_query = "DELETE FROM forgot_pass_tbl WHERE email = ?";
-                                            mysql_connection.query(delete_query, [email]);
-
-                                        }
-
-                                    }
-
+                                    res.send("Please check your email for instructions on how to reset your password");
 
                                 } else {
 

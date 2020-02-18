@@ -29,9 +29,8 @@ $(document).ready(function () {
                         window.location.href = "/login";
 
                     } else {
-                        scrollToTop();
                         error_msg.html(data.msg).slideDown().delay(5000).fadeOut();
-
+                        scrollToTop();
                     }
                 }
             });

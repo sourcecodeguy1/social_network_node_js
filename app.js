@@ -722,11 +722,11 @@ app.post('/forgotpass', function (req, res) {
                                                         let result = {result: "success"};
 
                                                         res.send(result);
-                                                        sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Forgot Password',
+                                                        /*sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Forgot Password',
                                                             'Forgot Password Request', 'ddrguy2 - Forgot Password', 'Forgot Password ', user_name,
                                                             'Use the link below to reset your password. If you did not request a password reset, then you can discard this message and your password will remain unchanged.' +
                                                             '<b>This link will expire in 1 hour</b>',
-                                                            '<a href="https://ddrguy2.juliowebmaster.com/create-new-password/'+code+'">Reset Password</a>');
+                                                            '<a href="https://ddrguy2.juliowebmaster.com/create-new-password/'+code+'">Reset Password</a>');*/
 
                                                     }
 

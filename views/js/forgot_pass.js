@@ -12,6 +12,7 @@ $(document).ready(function () {
             errorHandler(email);
         } else if(!isValidEmailAddress(email.val())){
             errorHandler(email);
+            error_msg.html("Please enter a valid email address.").slideDown().delay(5000).fadeOut();
         } else {
 
             // Make ajax request to the server.

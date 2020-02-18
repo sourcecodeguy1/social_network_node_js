@@ -10,6 +10,7 @@ $(document).ready(function () {
 
         if(email.val() === ""){
             errorHandler(email);
+            error_msg.html("Please enter your email address.").slideDown().delay(5000).fadeOut();
         } else if(!isValidEmailAddress(email.val())){
             errorHandler(email);
             error_msg.html("Please enter a valid email address.").slideDown().delay(5000).fadeOut();

@@ -746,7 +746,8 @@ app.post('/forgotpass', function (req, res) {
             });
 
     } else {
-        res.send("Please enter your email to reset your password.");
+        let result = {result: "error", msg: "Please enter your email to reset your password."};
+        res.send(result);
     }
 });
 

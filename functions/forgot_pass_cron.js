@@ -3,9 +3,7 @@ const mysql_connection = require('../db'); // Database connection file.
 
  let cronSchedule = cron.schedule('0 */1 * * *', () => {
 
-    //console.log('running a task every 10 seconds.');
-
-    let time = Date.now();
+    let time = Date.now(); /**Get the current time and date**/
 
     let sql = "SELECT * FROM forgot_pass_tbl";
     mysql_connection.query(sql, function (error, rows) {

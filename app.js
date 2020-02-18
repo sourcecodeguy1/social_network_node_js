@@ -722,11 +722,11 @@ app.post('/forgotpass', function (req, res) {
                                                         let result = {result: "success"};
 
                                                         res.send(result);
-                                                        sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Forgot Password',
+                                                        /*sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Forgot Password',
                                                             'Forgot Password Request', 'ddrguy2 - Forgot Password', 'Forgot Password ', user_name,
                                                             'Use the link below to reset your password. If you did not request a password reset, then you can discard this message and your password will remain unchanged.' +
                                                             '<b>This link will expire in 1 hour</b>',
-                                                            '<a href="https://ddrguy2.juliowebmaster.com/create-new-password/'+code+'">Reset Password</a>');
+                                                            '<a href="https://ddrguy2.juliowebmaster.com/create-new-password/'+code+'">Reset Password</a>');*/
 
                                                     }
 
@@ -815,6 +815,115 @@ app.get('/create-new-password/:token', function (req, res) {
 });
 
 /**End of create new password route**/
+
+
+app.post('/create-new-password/:token', function (req, res) {
+
+    let time = Date.now();
+
+    let password = req.body.NewPassword;
+    let confirmPassword = req.body.ConfirmPassword;
+
+    let token = req.params.token;
+
+    if(password !== ""){
+
+        if(confirmPassword !== ""){
+
+            if(password === confirmPassword){
+
+                console.log(password + " : " + confirmPassword);
+
+                let sql = "SELECT * FROM forgot_pass_tbl WHERE code = ?";
+                mysql_connection.query(sql, [token], function (error, rows) {
+
+                    if(error){
+                        let result = {result: "error", msg: "An error has occurred."};
+                        res.send(result);
+                    } else {
+
+                        if(rows.length === 1){
+
+                            for(let i = 0; i < rows.length; i++){
+
+                                let db_expiration = rows[i].expiration;
+                                let db_user_id = rows[i].user_id;
+
+                                if(time < db_expiration){
+
+                                    /**Hash the password before inserting to the database**/
+
+                                    bcrypt.hash(password, 10, function (error, hash) {
+
+                                        if(error){
+                                            let result = {result: "error", msg: "An error has occurred. Please try again later."};
+                                            res.send(result);
+                                        } else {
+
+                                            let sql_update = "UPDATE users SET password = ? WHERE id = ?";
+                                            mysql_connection.query(sql_update, [hash, db_user_id], function (error, rows) {
+
+                                                if(error){
+                                                    let result = {result: "error", msg: "An error has occurred. Please try again later."};
+                                                    res.send(result);
+                                                } else {
+
+                                                    if(rows.affectedRows === 1){
+
+                                                        req.flash("success", "Your password has been updated.");
+
+                                                        let result = {result: "success"};
+                                                        res.send(result);
+
+                                                        let delete_sql = "DELETE FROM forgot_pass_tbl WHERE code = ?";
+                                                        mysql_connection.query(delete_sql, [token]);
+
+                                                    } else {
+                                                        let result = {result: "error", msg: "An error has occurred. Please try again later."};
+                                                        res.send(result);
+                                                    }
+
+                                                }
+
+                                            });
+
+                                        }
+
+                                    });
+
+                                } else {
+                                    let result = {result: "error", msg: "Token may have expired or is invalid. Please re-submit a reset password."};
+                                    res.send(result);
+                                }
+
+                            }
+
+                        } else {
+                            let result = {result: "error", msg: "Token may have expired or is invalid. Please re-submit a reset password."};
+                            res.send(result);
+                        }
+
+                    }
+
+                });
+
+            } else {
+                let result = {result: "error", msg: "Passwords do not match."};
+                res.send(result);
+            }
+
+        } else {
+            let result = {result: "error", msg: "Please enter your confirm password."};
+            res.send(result);
+        }
+
+    } else {
+        let result = {result: "error", msg: "Please enter your password."};
+        res.send(result);
+    }
+
+});
+
 
 /************************************************WALL ROUTE********************************************/
 

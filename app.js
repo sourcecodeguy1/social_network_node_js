@@ -273,7 +273,7 @@ app.post("/login", function (req, res) {
                                         sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, db_email, 'Account Locked',
                                             'Account Locked Notification', 'ddrguy2 - Account Locked', 'Account Locked Notification', db_user,
                                             'This message is to inform you that your account has been locked due to a number of failed attempts. ' +
-                                            'Your account will be locked for one hour. If you didn\'t make this attempt, we suggest that you use the link below to reset your password',
+                                            'Your account will be locked for one hour. If you didn\'t make this attempt, we suggest that you use the link below to reset your password.',
                                             '<a href="https://ddrguy2.juliowebmaster.com/forgotpass">Reset Password</a>');
 
                                     } else {
@@ -655,7 +655,11 @@ app.post('/search', function (req, res) {
 
 app.get('/forgotpass', function (req, res) {
 
-    res.render('forgotpass', {page: "Forgot Password", logged_in_user: ""});
+    if(session_username){
+        res.redirect('/profile/' + session_id);
+    } else {
+        res.render('forgotpass', {page: "Forgot Password", logged_in_user: ""});
+    }
 
 });
 

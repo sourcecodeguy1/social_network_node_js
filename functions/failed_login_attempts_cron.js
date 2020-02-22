@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const mysql_connection = require('../db'); // Database connection file.
 
-let failedAttemptsCron = cron.schedule('*/1 * * * *', () => {
+let failedAttemptsCron = cron.schedule('0 */1 * * *', () => {
 
     let time = Date.now(); /**Get the current time and date**/
 

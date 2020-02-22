@@ -21,18 +21,17 @@ $(document).ready(function () {
                 type: "POST",
                 data: {username: username.val(), password: password.val()},
                 success: function (data) {
-                    if(data.result === "success"){
+                    if(data.result === "success") {
 
                         window.location.href = "/profile/" + data.id;
 
                     } else {
-                        error_msg.html(data.msg).slideDown().delay(5000).fadeOut();
+                            error_msg.html(data.msg).slideDown().delay(5000).fadeOut();
+                            scrollToTop();
 
-                        scrollToTop();
                     }
                 }
             });
-
 
         }
 

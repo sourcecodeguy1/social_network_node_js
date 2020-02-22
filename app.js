@@ -11,6 +11,8 @@ const randomGenerator = require('./functions/randomGenerator');
 const mysql_connection = require('./db'); // Database connection file.
 
 require('./functions/forgot_pass_cron');
+require('./functions/failed_login_attempts_cron');
+let failed_login_attempt_query = require('./functions/failed_login_attempts_update');
 
 require('dotenv').config();
 
@@ -202,6 +204,9 @@ app.get("/login", function (req, res) {
 
 /*Route for processing the login form and user input*/
 app.post("/login", function (req, res) {
+
+    const oneHour = Date.now() + 3600000; //1 hour
+    const failedAttemptsTime = Date.now() + 900000; // 15 minutes
 // Get username and password from the form.
     const username = req.body.username;
     const password = req.body.password;
@@ -226,29 +231,64 @@ app.post("/login", function (req, res) {
                         let db_user = rows[i].username;
                         let db_pass = rows[i].password;
                         let db_email = rows[i].email;
+                        let db_failed_login_attempts = rows[i].failed_login_attempts;
+                        let db_account_locked = rows[i].account_locked;
+
                         // Compare passwords between user input and database encryption.
                         bcrypt.compare(password, db_pass, function (err, result) {
-                            if (result) {
 
-                                console.log("Passwords match!");
+                            /**Check if the user account is locked**/
+                            if(db_account_locked === 1){
 
-                                // Store the current logged in user in a session.
-                                session_id = req.session.rows = db_id;
-                                session_username = req.session.rows = db_user;
-                                session_email = req.session.rows = db_email;
-
-                                req.flash("success", "Welcome, " + session_username );
-
-                                let _result = {result: "success", id: session_id};
-
-                                console.log("session_id " + session_id + " session_username " + session_username + " email " + session_email);
-                                //res.redirect("/profile/" + session_id);
+                                let _result = {result: "locked", msg: "It seems that your account has been locked due to a number of failed attempts."};
                                 res.send(_result);
 
-                            } else {
-                                let _result = {result: "error", msg: "Username or Password is incorrect."};
-                                res.send(_result);
+                            }else {
+                                if (result) {
+
+                                    // Store the current logged in user in a session.
+                                    session_id = req.session.rows = db_id;
+                                    session_username = req.session.rows = db_user;
+                                    session_email = req.session.rows = db_email;
+
+                                    req.flash("success", "Welcome, " + session_username );
+
+                                    let _result = {result: "success", id: session_id};
+
+                                    res.send(_result);
+
+                                } else {
+
+
+                                    if(db_failed_login_attempts === 5){
+
+                                        let _result = {result: "locking", msg: "Your account has been locked due to a number of failed attempts."};
+                                        res.send(_result);
+
+                                        let sql = "UPDATE users SET account_locked = ?, failed_login_attempts = ?, expiration = ? WHERE username = ?";
+                                        mysql_connection.query(sql, ['1', '0', oneHour, username]);
+
+                                        /** NOTIFY THE USER THAT HIS OR HER ACCOUNT HAS BEEN LOCKED **/
+
+                                        sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, db_email, 'Account Locked',
+                                            'Account Locked Notification', 'ddrguy2 - Account Locked', 'Account Locked Notification', db_user,
+                                            'This message is to inform you that your account has been locked due to a number of failed attempts. ' +
+                                            'Your account will be locked for one hour. If you didn\'t make this attempt, we suggest that you use the link below to reset your password' +
+                                            '<a href="https://ddrguy2.juliowebmaster.com/forgotpass">Reset Password</a>');
+
+                                    } else {
+
+                                        /** UPDATE THE FAILED LOGIN ATTEMPTS COLUMN IN THE DATABASE BASED ON THE USERNAME **/
+                                        db_failed_login_attempts++;
+                                        failed_login_attempt_query(db_failed_login_attempts, failedAttemptsTime, username);
+
+                                        let _result = {result: "error", msg: "Username or Password is incorrect."};
+                                        res.send(_result);
+                                    }
+
+                                }
                             }
+
                         });
                     }
                 }else{
@@ -697,6 +737,7 @@ app.post('/forgotpass', function (req, res) {
                                             res.send(error);
 
                                         } else {
+
                                             for(let i = 0; i < rows.length; i++){
 
                                                 user_id = rows[i].id;
@@ -791,7 +832,7 @@ app.get('/create-new-password/:token', function (req, res) {
                                 mysql_connection.query(delete_sql, [token], function (error) {
 
                                     if(error){
-                                        res.send(error);
+                                        res.send("An internal error has occurred.");
                                     }
 
                                 });
@@ -861,8 +902,8 @@ app.post('/create-new-password/:token', function (req, res) {
                                             res.send(result);
                                         } else {
 
-                                            let sql_update = "UPDATE users SET password = ? WHERE id = ?";
-                                            mysql_connection.query(sql_update, [hash, db_user_id], function (error, rows) {
+                                            let sql_update = "UPDATE users SET password = ?, account_locked = ? WHERE id = ?";
+                                            mysql_connection.query(sql_update, [hash, '0', db_user_id], function (error, rows) {
 
                                                 if(error){
                                                     let result = {result: "error", msg: "An error has occurred. Please try again later."};

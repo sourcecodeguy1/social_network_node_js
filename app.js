@@ -161,7 +161,7 @@ app.post("/register", function (req, res) {
 
 
 
-                                                    req.flash("success", "You have successfully created your account!");
+                                                    //req.flash("success", "You have successfully created your account!");
 
 
                                                     res.send(data_inserted);

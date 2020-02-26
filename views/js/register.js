@@ -44,7 +44,7 @@ $(document).ready(function () {
                     if(data.result === "success"){
 
                         /**Send email to the user**/
-                        window.location.href = "/login";
+                        window.location.href = "/profile/" + data.id;
                     }else if(data.result === "error_username"){
                         errorHandler(username);
                         error_msg.html(data.msg).fadeIn().delay(5000).fadeOut();

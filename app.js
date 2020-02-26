@@ -141,7 +141,7 @@ app.post("/register", function (req, res) {
 
                                                 /**Send email to the user**/
                                                 //sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.');
-                                                let data_inserted = {result: "success"};
+
 
                                                 // Create user folder
                                                 let dir = "./public/users/" + username;
@@ -157,9 +157,14 @@ app.post("/register", function (req, res) {
                                                     });
 
 
-                                                    req.flash("success", "Your account was created successfully.");
+                                                    session_id = req.session.rows = rows.insertId;
+                                                    session_username = req.session.rows = username;
 
+                                                    req.flash("success", "Welcome, " + session_username );
+
+                                                    let data_inserted = {result: "success", id: session_id};
                                                     res.send(data_inserted);
+
 
                                                 }else{
                                                     let _error = {result: "error", msg: "An error has occurred, please try again."};

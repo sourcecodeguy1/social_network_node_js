@@ -133,16 +133,11 @@ app.post("/register", function (req, res) {
                                     // // Insert data into database.
                                     mysql_connection.query("INSERT INTO users (first_name, last_name, username, email, password, user_bio, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)", [FirstName, LastName, username, email, hash, bio, profile_picture], function (err, rows) {
                                         if(err){
+                                            res.send(err);
                                             console.log(err);
-                                            let error = {result: "error", msg: err};
-                                            res.send(error);
-
                                         }else{
                                             if(rows.affectedRows === 1){
-
                                                 console.log("Data has been inserted.");
-
-                                                /**Send email to the user**/
                                                 //sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.');
                                                 let data_inserted = {result: "success"};
 
@@ -159,9 +154,8 @@ app.post("/register", function (req, res) {
 
                                                     });
 
+                                                    /**Send email to the user**/
 
-
-                                                    //req.flash("success", "You have successfully created your account!");
 
 
                                                     res.send(data_inserted);

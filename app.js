@@ -21,7 +21,7 @@ const sendMessage = require("./send_email_function");
 require('dotenv').load();
 
 // SET ENVIRONMENT VARIABLE FOR THE PORT
-let port = process.env.PORT || 5000;
+let port = process.env.PORT || 5500;
 
 app.set('port', (port));
 

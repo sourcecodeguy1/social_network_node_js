@@ -131,7 +131,7 @@ app.post("/register", function (req, res) {
                                 bcrypt.hash(password, 10, function (err, hash) {
 
                                     // // Insert data into database.
-                                    mysql_connection.query("INSERT INTO users (first_name, last_name, username, email, password, user_bio, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)", [FirstName, LastName, username, email, hash, bio, profile_picture], function (err, rows) {
+                                    mysql_connection.query("INSERT INTO users (first_name, last_name, username, email, password, user_bio, profile_picture, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, DATETIME_INTERVAL_CODE)", [FirstName, LastName, username, email, hash, bio, profile_picture], function (err, rows) {
                                         if(err){
                                             let error = {result: "error", msg: "An error has occurred please try again later"};
                                             res.send(error);

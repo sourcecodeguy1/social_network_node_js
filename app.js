@@ -161,7 +161,8 @@ app.post("/register", function (req, res) {
                                                     res.send(data_inserted);
 
                                                 }else{
-                                                    res.send("An error has occurred!");
+                                                    let _error = {result: "error", msg: "An error has occurred, please try again."};
+                                                    res.send(_error);
                                                 }
 
                                             }else{

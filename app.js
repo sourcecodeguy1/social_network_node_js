@@ -134,7 +134,7 @@ app.post("/register", function (req, res) {
                                     mysql_connection.query("INSERT INTO users (first_name, last_name, username, email, password, user_bio, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)", [FirstName, LastName, username, email, hash, bio, profile_picture], function (err, rows) {
                                         if(err){
                                             console.log(err);
-                                            let error = {result: "error", msg: "An error has occurred please try again later"};
+                                            let error = {result: "error", msg: err};
                                             res.send(error);
 
                                         }else{

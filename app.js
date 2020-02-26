@@ -143,7 +143,7 @@ app.post("/register", function (req, res) {
                                                 console.log("Data has been inserted.");
 
                                                 /**Send email to the user**/
-                                                sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.');
+                                                //sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.');
                                                 let data_inserted = {result: "success"};
 
                                                 // Create user folder

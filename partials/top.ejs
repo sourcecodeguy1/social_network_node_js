@@ -22,6 +22,15 @@
     <script src="../views/js/login.js"></script>
     <script src="../views/js/forgot_pass.js"></script>
     <script src="../views/js/create_new_password.js"></script>
+
+    <script src="https://ucarecdn.com/libs/widget/3.8.3/uploadcare.full.min.js" charset="utf-8"></script>
+    <script>
+        UPLOADCARE_PUBLIC_KEY = process.env.PUBLIC_KEY_UPLOADCARE;
+        UPLOADCARE_TABS = 'file url';
+        UPLOADCARE_IMAGES_ONLY = true;
+        UPLOADCARE_MULTIPART_MIN_SIZE = 10485760;
+    </script>
+
 </head>
 <body>
 <div id="scroll_top"></div>
@@ -67,7 +76,7 @@
                     <% if(logged_in_user === username){ %>
                     <button class="btn btn-default navbar-btn navbar-btn-avitar" data-toggle="popover">
 
-                        <img class="img-circle" src="../public/users/<%= typeof logged_in_user !== 'undefined' ? logged_in_user : '' %>/profile_picture/<%= typeof user_profile_picture !== 'undefined' ? user_profile_picture : '' %>">
+                        <img class="img-circle" src="<%= typeof user_profile_picture !== 'undefined' ? user_profile_picture : '' %>">
 
                     </button>
                     <%}%>

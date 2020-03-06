@@ -3,7 +3,7 @@ const app = express();
 const mysql = require('mysql');
 const bodyparser = require ('body-parser');
 const path = require('path');
-const multer = require('multer');
+
 const rimraf = require('rimraf');
 const cookieParser = require('cookie-parser');
 const flash  = require('connect-flash');
@@ -131,13 +131,18 @@ app.post("/register", function (req, res) {
                                 bcrypt.hash(password, 10, function (err, hash) {
 
                                     // // Insert data into database.
-                                    mysql_connection.query("INSERT INTO users (first_name, last_name, username, email, password, user_bio, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)", [FirstName, LastName, username, email, hash, bio, profile_picture], function (err, rows) {
+
+                                    let insert_users_sql = "INSERT INTO users (first_name, last_name, username, email, password) VALUES (?, ?, ?, ?, ?)";
+                                    mysql_connection.query(insert_users_sql, [FirstName, LastName, username, email, hash], function (err, rows) {
                                         if(err){
                                             res.send(err);
                                             console.log(err);
                                         }else{
                                             if(rows.affectedRows === 1){
                                                 console.log("Data has been inserted.");
+
+                                                let insert_user_settings_tbl = "INSERT INTO user_profile (user_bio, profile_picture, user_website, user_website_2, user_website_3, user_id) VALUES (?, ?, ?, ?, ?, ?)";
+                                                mysql_connection.query(insert_user_settings_tbl, [bio, profile_picture, '', '', '', rows.insertId]);
 
                                                 /**Send email to the user**/
                                                 //sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Registration Notification', 'Sample text here', 'ddrguy2 registration', 'Registration Notification', FirstName, 'Thank you for registering with us at ddrguy2.', 'Your account is ready to go.');
@@ -219,6 +224,7 @@ app.post("/login", function (req, res) {
     const username = req.body.username;
     const password = req.body.password;
 
+
     // Check if username and password are not empty
     if(username === ""){
         res.send("You must enter your username");
@@ -233,71 +239,80 @@ app.post("/login", function (req, res) {
                 //Check if user exists before proceeding.
                 if(rows.length === 1){
 
+
+
                     // Otherwise, loop through each record.
                     for(let i = 0; i < rows.length; i++) {
                         let db_id = rows[i].id;
                         let db_user = rows[i].username;
-                        let db_pass = rows[i].password;
                         let db_email = rows[i].email;
+                        let db_password = rows[i].password;
                         let db_failed_login_attempts = rows[i].failed_login_attempts;
                         let db_account_locked = rows[i].account_locked;
 
-                        // Compare passwords between user input and database encryption.
-                        bcrypt.compare(password, db_pass, function (err, result) {
 
-                            /**Check if the user account is locked**/
-                            if(db_account_locked === 1){
+                            // Compare passwords between user input and database encryption.
+                            bcrypt.compare(password, db_password, function (err, result) {
 
-                                let _result = {result: "locked", msg: "It seems that your account has been locked due to a number of failed attempts."};
-                                res.send(_result);
+                                /**Check if the user account is locked**/
+                                if(db_account_locked === 1){
 
-                            }else {
-                                if (result) {
-
-                                    // Store the current logged in user in a session.
-                                    session_id = req.session.rows = db_id;
-                                    session_username = req.session.rows = db_user;
-                                    session_email = req.session.rows = db_email;
-
-                                    req.flash("success", "Welcome, " + session_username );
-
-                                    let _result = {result: "success", id: session_id};
-
+                                    let _result = {result: "locked", msg: "It seems that your account has been locked due to a number of failed attempts."};
                                     res.send(_result);
 
-                                } else {
+                                }else {
+                                    if (result) {
 
+                                        // Store the current logged in user in a session.
+                                        session_id = req.session.rows = db_id;
+                                        session_username = req.session.rows = db_user;
+                                        session_email = req.session.rows = db_email;
 
-                                    if(db_failed_login_attempts === 5){
+                                        req.flash("success", "Welcome, " + session_username );
 
-                                        let _result = {result: "locking", msg: "Your account has been locked due to a number of failed attempts."};
+                                        let _result = {result: "success", id: session_id};
+
                                         res.send(_result);
-
-                                        let sql = "UPDATE users SET account_locked = ?, failed_login_attempts = ?, expiration = ? WHERE username = ?";
-                                        mysql_connection.query(sql, ['1', '0', oneHour, username]);
-
-                                        /** NOTIFY THE USER THAT HIS OR HER ACCOUNT HAS BEEN LOCKED **/
-
-                                        sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, db_email, 'Account Locked',
-                                            'Account Locked Notification', 'ddrguy2 - Account Locked', 'Account Locked Notification', db_user,
-                                            'This message is to inform you that your account has been locked due to a number of failed attempts. ' +
-                                            'Your account will be locked for one hour. If you didn\'t make this attempt, we suggest that you use the link below to reset your password.',
-                                            '<a href="https://ddrguy2.juliowebmaster.com/forgotpass">Reset Password</a>');
 
                                     } else {
 
-                                        /** UPDATE THE FAILED LOGIN ATTEMPTS COLUMN IN THE DATABASE BASED ON THE USERNAME **/
-                                        db_failed_login_attempts++;
-                                        failed_login_attempt_query(db_failed_login_attempts, failedAttemptsTime, username);
 
-                                        let _result = {result: "error", msg: "Username or Password is incorrect."};
-                                        res.send(_result);
+                                        if(db_failed_login_attempts === 5){
+
+                                            let _result = {result: "locking", msg: "Your account has been locked due to a number of failed attempts."};
+                                            res.send(_result);
+
+                                            let sql = "UPDATE users SET account_locked = ?, failed_login_attempts = ?, expiration = ? WHERE username = ?";
+                                            mysql_connection.query(sql, ['1', '0', oneHour, db_user]);
+
+                                            /** NOTIFY THE USER THAT HIS OR HER ACCOUNT HAS BEEN LOCKED **/
+
+                                            sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, db_email, 'Account Locked',
+                                                'Account Locked Notification', 'ddrguy2 - Account Locked', 'Account Locked Notification', db_user,
+                                                'This message is to inform you that your account has been locked due to a number of failed attempts. ' +
+                                                'Your account will be locked for one hour. If you didn\'t make this attempt, we suggest that you use the link below to reset your password.',
+                                                '<a href="https://ddrguy2.juliowebmaster.com/forgotpass">Reset Password</a>');
+
+                                        } else {
+
+                                            /** UPDATE THE FAILED LOGIN ATTEMPTS COLUMN IN THE DATABASE BASED ON THE USERNAME **/
+                                            db_failed_login_attempts++;
+                                            failed_login_attempt_query(db_failed_login_attempts, failedAttemptsTime, db_user);
+
+                                            let _result = {result: "error", msg: "Username or Password is incorrect."};
+                                            res.send(_result);
+                                        }
+
                                     }
-
                                 }
-                            }
 
-                        });
+                            });
+
+
+
+                        //return false;
+
+
                     }
                 }else{
                     let _result = {result: "error", msg: "Username or Password is incorrect."};
@@ -325,7 +340,9 @@ app.get("/profile/:id", function (req, res) {
     let get_id = req.params.id;
 
     //return res.status(401).send("Oops! The page that you are looking for wasn't found.");
-    mysql_connection.query("SELECT * FROM users WHERE id = ?", [get_id], function (err, rows) {
+    //let sql_select = "SELECT * FROM user_details WHERE user_id = (SELECT username FROM users WHERE id = ?)";
+    let sql_select = "SELECT * FROM user_details JOIN users ON user_details.user_id = users.id WHERE users.id = ?";
+    mysql_connection.query(sql_select, [get_id], function (err, rows) {
 
         if(err){
             console.log(err);
@@ -337,12 +354,35 @@ app.get("/profile/:id", function (req, res) {
             }else{
                 for(let i = 0; i < rows.length; i++){
                     let db_username = rows[i].username;
-                    let db_first_name = rows[i].first_name;
-                    let db_last_name = rows[i].last_name;
+                   /* let db_first_name = rows[i].first_name;
+                    let db_last_name = rows[i].last_name;*/
                     let db_user_bio = nl2br(rows[i].user_bio);
                     let profile_picture = rows[i].profile_picture;
+                    let db_user_website_1 = rows[i].user_website;
+                    let db_user_website_2 = rows[i].user_website_2;
+                    let db_user_website_3 = rows[i].user_website_3;
+                    let created_at = rows[i].created_at;
 
-                    res.render("profile", {u_id: session_id, params_id: get_id, username: db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio, user_profile_picture: profile_picture, page: "profile"});
+                    let m = new Date(created_at);
+                    let dateString =(m.getMonth()+1) +"/"+ m.getDate() +"/"+ m.getFullYear();
+
+                    console.log(dateString);
+
+                    res.render("profile", {
+
+                        u_id: session_id,
+                        params_id: get_id,
+                        username: db_username,
+                        logged_in_user: session_username,
+                        bio: db_user_bio,
+                        user_profile_picture: profile_picture,
+                        userWebsite1: db_user_website_1,
+                        userWebsite2: db_user_website_2,
+                        userWebsite3: db_user_website_3,
+                        page: "profile",
+                        join: dateString
+
+                    });
 
                 }
             }
@@ -376,7 +416,7 @@ app.get("/logout", function (req, res) {
 app.get('/settings', function (req, res) {
     if(session_username){
 
-        mysql_connection.query("SELECT * FROM users WHERE id = ? ", [session_id], function (err, rows) {
+        mysql_connection.query("SELECT * FROM user_details JOIN users ON user_details.user_id = users.id WHERE users.id = ? ", [session_id], function (err, rows) {
             if(err){
                 res.send(err);
             } else {
@@ -385,7 +425,22 @@ app.get('/settings', function (req, res) {
                     let db_bio = rows[i].user_bio;
                     let db_username = rows[i].username;
                     let profile_picture = rows[i].profile_picture;
-                    res.render("settings", {u_id: session_id, username: db_username, logged_in_user: session_username, bio: db_bio, user_profile_picture: profile_picture, page: "settings"});
+                    let db_user_website = rows[i].user_website;
+                    let db_user_website_2 = rows[i].user_website_2;
+                    let db_user_website_3 = rows[i].user_website_3;
+
+
+                    res.render("settings", {
+                        u_id: session_id,
+                        username: db_username,
+                        logged_in_user: session_username,
+                        bio: db_bio,
+                        user_profile_picture: profile_picture,
+                        website_1: db_user_website,
+                        website_2: db_user_website_2,
+                        website_3: db_user_website_3,
+                        page: "settings"
+                    });
                 }
             }
         });
@@ -400,134 +455,57 @@ app.get('/settings', function (req, res) {
 
 app.post('/upload', function (req, res) {
 
-    /*SET STORAGE ENGINE*/
 
-    let dir = upload_user_path();
+    let avatar = req.body.newUploadedPicture;
 
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
+    if (avatar === undefined || avatar === "") {
 
-
-        return upload_profile_image(req, res);
-
+        let _result = {result: "error", msg: "No File Selected!"};
+        res.send(_result);
 
     } else {
-        return upload_profile_image(req, res);
+
+            /*UPDATE THE PROFILE PICTURE TO THE DATABASE*/
+            mysql_connection.query("UPDATE user_details SET profile_picture = ? WHERE user_id = ?", [avatar, session_id], function (err, rows) {
+                if (err) {
+                    res.send(err);
+                } else {
+
+                    if (rows.changedRows === 1) {
+
+                        let success = {result: "success", id: session_id};
+
+                        res.send(success);
+
+                        //res.redirect("/profile/" + session_id);
+
+                    } else {
+                        res.send(err);
+                    }
+
+                }
+            });
     }
+
+
 
 
 });
 /*FUNCTION FOR UPLOADING PROFILE IMAGE*/
 
-function upload_user_path() {
+/*function upload_user_path() {
     return './public/users/' + session_username + '/profile_picture';
 
-}
-
-function upload_profile_image(req, res){
-
-    let dir = upload_user_path();
-
-    const storage = multer.diskStorage({
-
-        destination: dir,
-        filename: function (req, file, cb) {
-            cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-        }
-    });
-
-    /*INIT UPLOAD*/
-    const upload = multer({
-        storage: storage,
-        limits: {fileSize: 1000000},
-        fileFilter: function (req, file, cb) {
-            checkFileType(file, cb);
-        }
-    }).single('file_upload');
-
-    // Check File Type
-    function checkFileType(file, cb){
-        // Allow ext
-        const filetypes = /jpeg|jpg|png|gif/;
-        // Check ext
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        // Check mime
-        const mimetype = filetypes.test(file.mimetype);
-
-        if(mimetype && extname){
-            return cb(null, true);
-        } else {
-            cb('Images Only!');
-        }
-    }
-
-    upload(req, res, function (err) {
-        if (err) {
-            console.log(err);
-            //res.render('settings', {u_id: session_id, logged_in_user: session_username, bio: '', msg: err});
-            res.send(err);
-        } else {
-
-            if (req.file === undefined) {
-                //res.render('settings', {u_id: session_id, logged_in_user: session_username, bio: '', msg: 'No File Selected!'});
-                res.send('No File Selected!');
-            } else {
-                console.log("Success! Picture uploaded!");
-
-                /*UNLINK THE OLD IMAGE IF ANY THEN ADD THE NEW IMAGE*/
-                /*CHECK IF THERE IS AN IMAGE IN THE DATABASE*/
-
-                mysql_connection.query("SELECT * FROM users WHERE id = ? ", [session_id], function (error, rows) {
-                    if (error) {
-                        res.send(error);
-                    } else {
-
-                        for (let i = 0; i < rows.length; i++) {
-                            let db_profile_picture = rows[i].profile_picture;
-
-                            //console.log(db_profile_picture);
-
-                            fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
-                                if (err) return console.log(err);
-                                console.log('file deleted successfully');
-                            });
-                        }
-
-                    }
+}*/
 
 
-                    /*UPDATE THE PROFILE PICTURE TO THE DATABASE*/
-                    mysql_connection.query("UPDATE users SET profile_picture = ? WHERE id = ?", [req.file.filename, session_id], function (err, rows) {
-                        if (err) {
-                            res.send(err);
-                        } else {
 
-                            if (rows.changedRows === 1) {
-
-                                console.log(req.file);
-                                console.log("You new file is " + req.file.filename);
-
-                                res.redirect("/profile/" + session_id);
-
-                            } else {
-                                res.send(err);
-                            }
-
-                        }
-                    });
-
-                });
-            }
-        }
-    });
-
-}
 
 /*END OF FUNCTION FOR UPLOADING PROFILE IMAGE*/
 
 /*END UPLOAD IMAGE*/
 
-/*ADD OR UPDATE ROUTE*/
+/*ADD OR UPDATE BIO ROUTE*/
 app.post('/bio_post', function (req, res) {
 
 
@@ -540,7 +518,7 @@ app.post('/bio_post', function (req, res) {
 
         // Connect to mysql database
 
-        mysql_connection.query("UPDATE users SET user_bio = ? WHERE id = ?", [update_bio, session_id], function (err, rows) {
+        mysql_connection.query("UPDATE user_details SET user_bio = ? WHERE user_id = ?", [update_bio, session_id], function (err, rows) {
             if (err) {
                 let obj_error = {err: err};
                 res.send(obj_error.err);
@@ -557,7 +535,6 @@ app.post('/bio_post', function (req, res) {
                 } else {
                     let msg_error = {msg_err: 'No changes were made to your bio.'};
                     res.send(msg_error);
-                    console.log(msg_error);
 
                 }
 
@@ -568,21 +545,82 @@ app.post('/bio_post', function (req, res) {
         res.send("Bio field is empty");
     }
 });
-/*END ADD OR UPDATE ROUTE*/
+/*END ADD OR UPDATE BIO ROUTE*/
+
+
+/**USER SOCIAL MEDIA LINKS**/
+
+app.post('/user_social_links', function (req, res) {
+
+    /** GET USER INPUT FROM USER**/
+
+    let social_link1 = req.body.link1.toLowerCase();
+    let social_link2 = req.body.link2.toLowerCase();
+    let social_link3 = req.body.link3.toLowerCase();
+
+
+    /**UPDATE INTO DATABASE**/
+
+    let update_social_links = "UPDATE user_details SET user_website = ?, user_website_2 = ?, user_website_3 = ?, created_at = CURRENT_TIMESTAMP WHERE user_id = ?";
+    mysql_connection.query(update_social_links, [social_link1, social_link2, social_link3, session_id], function (error, rows) {
+
+        if( error ) {
+            let _result = {result: "error", msg: "An error has occurred. Please try again later."};
+            res.send(_result);
+
+        } else {
+
+            if(rows.affectedRows === 1){
+
+                let _result = {result: "success", msg: "Changes update!"};
+                res.send(_result);
+
+            } else {
+                let _result = {result: "error", msg: "An error has occurred. Please try again later."};
+                res.send(_result);
+            }
+        }
+
+    });
+
+});
+
+/**END USER SOCIAL MEDIA LINKS**/
 
 /**DELETE USER ACCOUNT**/
 app.post('/delete', function (req, res) {
-    // Connect to the database and delete the current logged in user.
-    mysql_connection.query("DELETE FROM users WHERE username = ?", [session_username], function (err, row) {
+    // Connect to the database and delete the current logged in user_profile. This will only delete the constraint from this table.
+    mysql_connection.query("DELETE FROM user_details WHERE user_id = ?", [session_id], function (err, row) {
 
         if(err){
             res.send(err);
         }else{
             if(row.affectedRows === 1){
-                sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, session_email, 'Deleted Account', 'Account deleted', 'ddrguy2 - Account Deleted', 'Deleted Account', session_username, 'We\'re sorry to see you go. Thank you for trying out ddrguy2.', 'You\'re account has been completely removed. Account recovery is not possible.');
-                removeUserFolder();
-                let delete_message = {result: "success", username: session_username};
-                res.send(delete_message);
+                /**CREATE ANOTHER QUERY TO DELETE THE users table that contains that related user**/
+
+                let delete_users_table = "DELETE FROM users WHERE id = ?";
+                mysql_connection.query(delete_users_table, [session_id], function (err, rows) {
+
+                    if(err){
+                        let _result = {result: "error", msg: "An error has occurred, please try again later."};
+                        res.send(_result);
+                    } else {
+
+                        if(rows.affectedRows === 1){
+
+                            sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, session_email, 'Deleted Account', 'Account deleted', 'ddrguy2 - Account Deleted', 'Deleted Account', session_username, 'We\'re sorry to see you go. Thank you for trying out ddrguy2.', 'You\'re account has been completely removed. Account recovery is not possible.');
+                            removeUserFolder();
+                            let delete_message = {result: "success", username: session_username};
+                            res.send(delete_message);
+
+                        } else {
+                            let _result = {result: "error", msg: "An error has occurred, please try again later."};
+                            res.send(_result);
+                        }
+
+                    }
+
+                });
 
             } else {
                 let delete_message = {result: "error", msg: "An error has occurred!"};
@@ -717,13 +755,13 @@ app.post('/forgotpass', function (req, res) {
                                 } else {
 
                                     let user_id = null;
-                                    let user_name = null;
+                                    let firstName = null;
 
                                     /**
                                         CREATE DATE, TIME, AND YEAR VARIABLES
                                      **/
 
-                                    let months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+                                    /*let months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
 
                                     let fullYear = new Date();
                                     let month = new Date();
@@ -739,9 +777,9 @@ app.post('/forgotpass', function (req, res) {
                                     let _mm = minute.getMinutes();
                                     let ss = seconds.getSeconds();
 
-                                    let completeDateTimeYear = yyyy+"-"+mm+"-"+dd+" "+hh+":"+_mm+":"+ss;
+                                    let completeDateTimeYear = yyyy+"-"+mm+"-"+dd+" "+hh+":"+_mm+":"+ss;*/
 
-                                    let sql = "SELECT id, username FROM users WHERE email = ?";
+                                    let sql = "SELECT id, first_name FROM users WHERE email = ?";
 
                                     mysql_connection.query(sql, [email], function (error, rows) {
 
@@ -753,11 +791,11 @@ app.post('/forgotpass', function (req, res) {
                                             for(let i = 0; i < rows.length; i++){
 
                                                 user_id = rows[i].id;
-                                                user_name = rows[i].username;
+                                                firstName = rows[i].first_name;
                                             }
 
-                                            let insert_sql = "INSERT INTO forgot_pass_tbl (code, expiration, user_id, email, created_at) VALUES (?,?,?,?,?)";
-                                            mysql_connection.query(insert_sql, [code, codeExpires, user_id, email, completeDateTimeYear], function (error, rows) {
+                                            let insert_sql = "INSERT INTO forgot_pass_tbl (code, expiration, user_id, email) VALUES (?,?,?,?)";
+                                            mysql_connection.query(insert_sql, [code, codeExpires, user_id, email], function (error, rows) {
 
                                                 if(error){
                                                     res.send(error);
@@ -776,7 +814,7 @@ app.post('/forgotpass', function (req, res) {
 
                                                         res.send(result);
                                                         sendMessage(process.env.MAIL_USER, process.env.MAIL_PASS, process.env.MAIL_FROM, email, 'Forgot Password',
-                                                            'Forgot Password Request', 'ddrguy2 - Forgot Password', 'Forgot Password ', user_name,
+                                                            'Forgot Password Request', 'ddrguy2 - Forgot Password', 'Forgot Password ', firstName,
                                                             'Use the link below to reset your password. If you did not request a password reset, then you can discard this message and your password will remain unchanged.' +
                                                             '<b>This link will expire in 1 hour</b>',
                                                             '<a href="https://ddrguy2.juliowebmaster.com/create-new-password/'+code+'">Reset Password</a>');
@@ -886,8 +924,6 @@ app.post('/create-new-password/:token', function (req, res) {
 
             if(password === confirmPassword){
 
-                console.log(password + " : " + confirmPassword);
-
                 let sql = "SELECT * FROM forgot_pass_tbl WHERE code = ?";
                 mysql_connection.query(sql, [token], function (error, rows) {
 
@@ -979,13 +1015,13 @@ app.post('/create-new-password/:token', function (req, res) {
 });
 
 
-/************************************************WALL ROUTE********************************************/
+/************************************************DASHBOARD ROUTE********************************************/
 
 app.get('/dashboard', function (req, res) {
     if(session_username){
 
         // RETRIEVE ALL OF USER INFORMATION
-        mysql_connection.query("SELECT * FROM users WHERE id = ? ", [session_id], function (err, rows) {
+        mysql_connection.query("SELECT * FROM user_details JOIN users ON user_details.user_id = users.id WHERE users.id = ? ", [session_id], function (err, rows) {
             if(err){
                 res.send(err);
             } else {
@@ -994,13 +1030,23 @@ app.get('/dashboard', function (req, res) {
 
                     for(let i = 0; i < rows.length; i++){
 
+                        let db_username = rows[i].username;
                         let db_first_name = rows[i].first_name;
                         let db_last_name  = rows[i].last_name;
-                        let db_username   = rows[i].username;
-                        let db_user_bio   = rows[i].user_bio;
-                        let db_profile_picture  = rows[i].profile_picture;
+                        let db_user_bio = rows[i].user_bio;
+                        let db_user_profile_picture = rows[i].profile_picture;
 
-                        res.render("dashboard", {u_id: session_id, username: db_username, logged_in_user: session_username, firstName: db_first_name, lastName: db_last_name, bio: db_user_bio, user_profile_picture: db_profile_picture, page: "dashboard"});
+
+                            res.render("dashboard", {
+                            u_id: session_id,
+                            username: db_username,
+                            logged_in_user: session_username,
+                            firstName: db_first_name,
+                            lastName: db_last_name,
+                            bio: db_user_bio,
+                            user_profile_picture: db_user_profile_picture,
+                            page: "dashboard"
+                        });
 
                     }
 
@@ -1019,7 +1065,7 @@ app.get('/dashboard', function (req, res) {
     }
 });
 
-/************************************************END OF WALL ROUTE********************************************/
+/************************************************END OF DASHBOARD ROUTE********************************************/
 
 /*Route error handling*/
 app.get('*', function(req, res) {

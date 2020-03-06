@@ -40,3 +40,25 @@
             scrollTop: $('#scroll_top').offset().top
         }, 'slow');
     }
+
+    /**ELEMENT SLIDE TOGGLE FUNCTION**/
+    function slideToggleFunction(element1, element2) {
+
+        $(element1).click(function () {
+
+            $(element2).slideToggle();
+
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+

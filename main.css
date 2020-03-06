@@ -63,8 +63,10 @@
 
 }
 #btn_upload_profile_picture{
-   margin-right: 50px;
+   margin-right: 15px;
+
 }
+
 /*UPDATE PASSWORD*/
 #frm_update_password{
 
@@ -110,6 +112,25 @@
     resize: none;
     font-weight: bold;
 }
+/*ADD OR SOCIAL MEDIA LINKS*/
+
+#add_update_social_media_links_title{
+    cursor: pointer;
+}
+#add_update_social_media_links_panel, #add_update_social_media_links_title {
+    padding: 5px;
+    text-align: center;
+    background-color: #e5eecc;
+    border: solid 1px #c3c3c3;
+}
+
+#add_update_social_media_links_panel {
+    display: none;
+}
+/*#user_bio{
+    resize: none;
+    font-weight: bold;
+}*/
 
 /*DELETE USER PROFILE*/
 

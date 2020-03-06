@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     // Create variable to gather user input.
     let password = $('#create_new_password');
     let confirmPassword = $('#create_new_password_confirm');
@@ -32,7 +31,6 @@ $(document).ready(function () {
 
                             } else {
                                 error_msg.html(data.msg).slideDown().delay(5000).fadeOut();
-                                console.log(password.val() + ":" + confirmPassword.val());
                                 scrollToTop();
                             }
                         }

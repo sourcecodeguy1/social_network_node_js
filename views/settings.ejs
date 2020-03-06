@@ -15,18 +15,23 @@
     <div id="add_profile_picture_panel">
 
         <div><%= typeof msg !== 'undefined' ? msg : '' %></div>
-        <form id="frm_upload_profile_picture" action="/upload" method="post" enctype="multipart/form-data">
+
+        <input id="hidden_profile_pic_id" type="hidden" value="<%= user_profile_picture.slice(21,57) %>" />
+
+        <form id="frm_upload_profile_picture" action="/upload" method="post">
 
             <p id="error_pic_upload_handler" class="alert-danger"></p><!--jQuery error handler-->
             <p id="success_pic_upload_handler" style="background-color: #00AA88; color: white;"></p><!--jQuery success handler-->
 
-            <input type="file" name="file_upload" id="txt_file_upload"><br />
+            <!--<input type="file" name="file_upload" id="txt_file_upload"><br />-->
 
-            <button id="btn_upload_profile_picture" type="submit" class="btn btn-primary">Upload Profile Picture</button>
+            <input type="hidden" name="UPLOADCARE_PUB_KEY" value="e9c52880a8af766d0549">
+
+            <input type="hidden" role="uploadcare-uploader" name="profile_picture_upload" id="txt_file_upload" /><br /><br />
+
+            <button id="btn_upload_profile_picture" type="button" class="btn btn-primary">Upload</button>
+
         </form>
-
-
-
     </div>
 
     </div>
@@ -103,6 +108,44 @@
         </form>
     </div><br />
 
+    <!--SOCIAL MEDIA LINKS-->
+
+    <div id="add_update_social_media_links_title"><strong>Web Site Links</strong></div>
+    <div id="add_update_social_media_links_panel">
+
+        <form id="frm_add_update_social_media_links"><br />
+            <div class="py-5 w-100">
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <p id="error_social_media_links_handler" class="alert alert-danger collapse"></p><!--jQuery error handler-->
+                            <p id="success_social_media_links_handler" class="alert alert-success collapse"></p><!--jQuery success handler-->
+                            <form class="">
+                                <div class="form-group">
+                                    <!--Check if user has social media links-->
+                                    <div class="alert-danger"></div><br />
+
+                                        <div class="form-group">
+                                            <input id="txt_website_link_1" value="<%= website_1%>" name="website_link_1" type="text" class="form-control" placeholder="Website Link 1">
+                                        </div>
+                                        <div class="form-group">
+                                            <input id="txt_website_link_2" value="<%= website_2 %>" name="website_link_2" type="text" class="form-control" placeholder="Website Link 2">
+                                        </div>
+                                        <div class="form-group">
+                                            <input id="txt_website_link_3" value="<%= website_3 %>" name="website_link_3" type="text" class="form-control" placeholder="Website Link 3">
+                                        </div>
+                                </div>
+                                <div class="form-group"></div>
+                                <div class="form-group"></div>
+                                <button id="btnSubmitSocialLinks" type="button" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+            </div>
+        </form>
+    </div><br />
+
     <!--END ADD OR UPDATE BIO-->
 
     <!--DELETE USER PROFILE-->
@@ -165,6 +208,9 @@
 <script src="../views/js/bio.js"></script>
 <!--ADD DELETE JS FILE-->
 <script src="../views/js/delete.js"></script>
+<!--ADD SOCIAL LINKS JS FILE-->
+<script src="../views/js/social_links.js"></script>
+<script src="../views/js/delete_uploadcare.js"></script>
 <!--ADD THE FOOTER TEMPLATE-->
 <% include ../partials/bottom.ejs %>
 

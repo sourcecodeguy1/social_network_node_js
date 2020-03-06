@@ -14,7 +14,8 @@
                         Profile
                     </a>
                 </li>
-
+                <!--HIDE FROM VISITORS-->
+                <% if(logged_in_user){ %>
                 <li>
                     <a data-toggle="tab" href="#feed">
                         <i class="orange ace-icon fa fa-rss bigger-120"></i>
@@ -35,14 +36,16 @@
                         Pictures
                     </a>
                 </li>
+                <% } %>
             </ul>
 
+                <!--END HIDE FROM VISITORS-->
             <div class="tab-content no-border padding-24">
                 <div id="home" class="tab-pane in active">
                     <div class="row">
                         <div class="col-xs-12 col-sm-3 center">
 							<span class="profile-picture">
-								<img class="editable img-responsive" alt=" Avatar" id="avatar2" src="../public/users/<%= username %>/profile_picture/<%= user_profile_picture %>">
+								<img class="editable img-responsive" alt=" Avatar" id="avatar2" src="<%= user_profile_picture %>">
 							</span>
 
                             <div class="space space-4"></div>
@@ -83,28 +86,10 @@
                                 </div>
 
                                 <div class="profile-info-row">
-                                    <div class="profile-info-name"> Location </div>
-
-                                    <div class="profile-info-value">
-                                        <i class="fa fa-map-marker light-orange bigger-110"></i>
-                                        <span>Netherlands</span>
-                                        <span>Amsterdam</span>
-                                    </div>
-                                </div>
-
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Age </div>
-
-                                    <div class="profile-info-value">
-                                        <span>38</span>
-                                    </div>
-                                </div>
-
-                                <div class="profile-info-row">
                                     <div class="profile-info-name"> Joined </div>
 
                                     <div class="profile-info-value">
-                                        <span>2010/06/20</span>
+                                        <span><%= join %></span>
                                     </div>
                                 </div>
 
@@ -118,36 +103,50 @@
                             </div>
 
                             <div class="hr hr-8 dotted"></div>
-
                             <div class="profile-user-info">
+
+                            <% if(logged_in_user){ %>
+
+                            <% if(userWebsite1) {%>
+
+
                                 <div class="profile-info-row">
                                     <div class="profile-info-name"> Website </div>
 
                                     <div class="profile-info-value">
-                                        <a href="#" target="_blank">www.alexdoe.com</a>
+                                        <a href="<%= userWebsite1 === 'https://' + userWebsite1 ? userWebsite1 : 'https://' + userWebsite1.replace("https://", "") %>" target="_blank"><%= userWebsite1 %></a>
                                     </div>
                                 </div>
 
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name">
-                                        <i class="middle ace-icon fa fa-facebook-square bigger-150 blue"></i>
+                                <% }  if(userWebsite2){ %>
+
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name">
+                                            <i class="middle ace-icon fa fa-facebook-square bigger-150 blue"></i>
+                                        </div>
+
+                                        <div class="profile-info-value">
+                                            <a href="<%= userWebsite2 === 'https://' + userWebsite2 ? userWebsite2 : 'https://' + userWebsite2.replace("https://", "") %>" target="_blank"><%= userWebsite2 %></a>
+                                        </div>
                                     </div>
 
-                                    <div class="profile-info-value">
-                                        <a href="#">Find me on Facebook</a>
-                                    </div>
-                                </div>
+                                <%}  if (userWebsite3){%>
 
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name">
-                                        <i class="middle ace-icon fa fa-twitter-square bigger-150 light-blue"></i>
+
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name">
+                                            <i class="middle ace-icon fa fa-twitter-square bigger-150 light-blue"></i>
+                                        </div>
+
+                                        <div class="profile-info-value">
+                                            <a href="<%= userWebsite3 === 'https://' + userWebsite3 ? userWebsite3 : 'https://' + userWebsite3.replace("https://", "") %>" target="_blank"><%= userWebsite3 %></a>
+                                        </div>
                                     </div>
 
-                                    <div class="profile-info-value">
-                                        <a href="#">Follow me on Twitter</a>
-                                    </div>
-                                </div>
-                            </div>
+                                <% } %>
+
+                            <% } %>
+                        </div>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
 
@@ -828,6 +827,7 @@
                 </div><!-- /#friends -->
 
                 <div id="pictures" class="tab-pane">
+                    <input type="hidden" role="uploadcare-uploader" name="my_file" />
                     <ul class="ace-thumbnails">
                         <li>
                             <a href="#" data-rel="colorbox">

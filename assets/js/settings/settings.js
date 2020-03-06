@@ -1,31 +1,25 @@
 /*UPLOAD PROFILE PICTURE*/
 $(document).ready(function () {
-   $('#add_profile_picture_title').click(function () {
 
-       $('#add_profile_picture_panel').slideToggle();
-
-   });
+    slideToggleFunction('#add_profile_picture_title', '#add_profile_picture_panel');
 
 /*UPDATE PASSWORD FORM*/
-   $('#update_password_title').click(function () {
 
-       $('#update_password_panel').slideToggle();
-
-   });
+    slideToggleFunction('#update_password_title', '#update_password_panel');
 
 /*ADD OR UPDATE BIO*/
-   $('#add_update_bio_title').click(function () {
 
-       $('#add_update_bio_panel').slideToggle();
+    slideToggleFunction('#add_update_bio_title', '#add_update_bio_panel');
 
-   });
+
+/*ADD OR UPDATE SOCIAL WEBSITE LINKS*/
+    slideToggleFunction('#add_update_social_media_links_title', '#add_update_social_media_links_panel');
 
 /*DELETE USER PROFILE*/
-   $('#delete_account_title').click(function () {
 
-       $('#delete_account_panel').slideToggle();
+    slideToggleFunction('#delete_account_title', '#delete_account_panel');
 
-   });
+
 
    $('#btnDelete').click(function () {
 
@@ -45,5 +39,6 @@ $(document).ready(function () {
    $('#modal_x_btn').on('click', function () {
       $('.modal_alert').fadeOut();
    });
+
 
 });

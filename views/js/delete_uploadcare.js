@@ -8,7 +8,7 @@ $('#btn_upload_profile_picture').click(function () {
     $.ajax({
         url: "https://api.uploadcare.com/files/"+ current_profile_pic_id +"/",
         type: "DELETE",
-        headers: { "Authorization": "Uploadcare.Simple " + process.env.PUBLIC_KEY_UPLOADCARE + ":" + process.env.PRIVATE_KEY_UPLOADCARE}
+        headers: { "Authorization": "Uploadcare.Simple e9c52880a8af766d0549:493c87678a3db2694ea8" }
     });
 
     /**SECOND AJAX REQUEST FOR POST NEW PICTURE INTO THE DATABASE**/

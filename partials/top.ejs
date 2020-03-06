@@ -76,7 +76,7 @@
                     <% if(logged_in_user === username){ %>
                     <button class="btn btn-default navbar-btn navbar-btn-avitar" data-toggle="popover">
 
-                        <img class="img-circle" src="<%= typeof user_profile_picture !== 'undefined' ? user_profile_picture : '' %>">
+                        <img class="img-circle" src="<%= user_profile_picture === 'default.png' ? '../public/users/'+ username +'/profile_picture/default.png' : user_profile_picture %>">
 
                     </button>
                     <%}%>

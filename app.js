@@ -141,7 +141,7 @@ app.post("/register", function (req, res) {
                                             if(rows.affectedRows === 1){
                                                 console.log("Data has been inserted.");
 
-                                                let insert_user_settings_tbl = "INSERT INTO user_profile (user_bio, profile_picture, user_website, user_website_2, user_website_3, user_id) VALUES (?, ?, ?, ?, ?, ?)";
+                                                let insert_user_settings_tbl = "INSERT INTO user_details (user_bio, profile_picture, user_website, user_website_2, user_website_3, user_id) VALUES (?, ?, ?, ?, ?, ?)";
                                                 mysql_connection.query(insert_user_settings_tbl, [bio, profile_picture, '', '', '', rows.insertId]);
 
                                                 /**Send email to the user**/

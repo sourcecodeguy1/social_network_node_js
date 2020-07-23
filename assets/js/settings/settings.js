@@ -19,7 +19,9 @@ $(document).ready(function () {
 
     slideToggleFunction('#delete_account_title', '#delete_account_panel');
 
+/** Profile Page Pictures tab **/
 
+    slideToggleFunction('#upload_gallery_pictures_title', '#add_gallery_pictures_panel');
 
    $('#btnDelete').click(function () {
 

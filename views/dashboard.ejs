@@ -327,7 +327,10 @@
         <div class="panel-body text-center">
             <img
               class="panel-profile-img"
-              src="<%= user_profile_picture === 'default.png' ? '../public/users/'+ username +'/profile_picture/default.png' : user_profile_picture %> ">
+              src="<%= user_profile_picture === 'default.png' ? '../public/users/'+ username +'/profile_picture/default.png'
+                      :
+                      '../public/users/'+ username +'/profile_picture/' + user_profile_picture
+              %> ">
 
           <h5 class="panel-title">
             <a class="text-inherit" href="/profile/<%= u_id %>"><%= logged_in_user %></a>

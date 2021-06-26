@@ -1,4 +1,6 @@
+.env
 .idea
 node_modules/
 public/users
 db.js
+public/

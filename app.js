@@ -3,6 +3,7 @@ const app = express();
 const mysql = require('mysql');
 const bodyparser = require ('body-parser');
 const path = require('path');
+const multer = require('multer');
 
 const rimraf = require('rimraf');
 const cookieParser = require('cookie-parser');
@@ -324,7 +325,7 @@ app.post("/login", function (req, res) {
 });
 
 app.get("/profile", function (req, res) {
-    if(!session_username || session_username === null){
+    if(!session_username){
         res.redirect("/login");
     }else {
         res.redirect("/profile/" + session_id);
@@ -339,9 +340,21 @@ app.get("/profile/:id", function (req, res) {
 
     let get_id = req.params.id;
 
+    let db_username;
+    let db_user_bio;
+    let profile_picture;
+    let db_user_website_1;
+    let db_user_website_2;
+    let db_user_website_3;
+    let dateString;
+    let created_at;
+    let m;
+    let db_user_photos;
+
     //return res.status(401).send("Oops! The page that you are looking for wasn't found.");
     //let sql_select = "SELECT * FROM user_details WHERE user_id = (SELECT username FROM users WHERE id = ?)";
-    let sql_select = "SELECT * FROM user_details JOIN users ON user_details.user_id = users.id WHERE users.id = ?";
+    //let sql_select = "SELECT * FROM user_details JOIN users ON user_details.user_id = users.id WHERE users.id = ?";
+    let sql_select = "SELECT * FROM users u JOIN user_details ud ON u.id = ud.user_id JOIN photos p ON p.user_id = ud.user_id WHERE u.id = ?";
     mysql_connection.query(sql_select, [get_id], function (err, rows) {
 
         if(err){
@@ -353,38 +366,38 @@ app.get("/profile/:id", function (req, res) {
                 res.send("That user doesn't exist!!");
             }else{
                 for(let i = 0; i < rows.length; i++){
-                    let db_username = rows[i].username;
+                    db_username = rows[i].username;
                    /* let db_first_name = rows[i].first_name;
                     let db_last_name = rows[i].last_name;*/
-                    let db_user_bio = nl2br(rows[i].user_bio);
-                    let profile_picture = rows[i].profile_picture;
-                    let db_user_website_1 = rows[i].user_website;
-                    let db_user_website_2 = rows[i].user_website_2;
-                    let db_user_website_3 = rows[i].user_website_3;
-                    let created_at = rows[i].created_at;
+                   db_user_bio = nl2br(rows[i].user_bio);
+                    profile_picture = rows[i].profile_picture;
+                    db_user_website_1 = rows[i].user_website;
+                    db_user_website_2 = rows[i].user_website_2;
+                    db_user_website_3 = rows[i].user_website_3;
+                    db_user_photos = rows[i].user_photos;
+                    created_at = rows[i].created_at;
 
-                    let m = new Date(created_at);
-                    let dateString =(m.getMonth()+1) +"/"+ m.getDate() +"/"+ m.getFullYear();
-
-                    console.log(dateString);
-
-                    res.render("profile", {
-
-                        u_id: session_id,
-                        params_id: get_id,
-                        username: db_username,
-                        logged_in_user: session_username,
-                        bio: db_user_bio,
-                        user_profile_picture: profile_picture,
-                        userWebsite1: db_user_website_1,
-                        userWebsite2: db_user_website_2,
-                        userWebsite3: db_user_website_3,
-                        page: "profile",
-                        join: dateString
-
-                    });
+                    m = new Date(created_at);
+                    dateString =(m.getMonth()+1) +"/"+ m.getDate() +"/"+ m.getFullYear();
 
                 }
+                res.render("profile", {
+
+                    u_id: session_id,
+                    params_id: get_id,
+                    username: db_username,
+                    logged_in_user: session_username,
+                    bio: db_user_bio,
+                    user_profile_picture: profile_picture,
+                    userWebsite1: db_user_website_1,
+                    userWebsite2: db_user_website_2,
+                    userWebsite3: db_user_website_3,
+                    data: rows,
+                    page: "profile",
+                    join: dateString
+
+                });
+
             }
 
         }
@@ -455,18 +468,66 @@ app.get('/settings', function (req, res) {
 
 app.post('/upload', function (req, res) {
 
+    let newFileName;
 
-    let avatar = req.body.newUploadedPicture;
+    let data = [];
 
-    if (avatar === undefined || avatar === "") {
+    let storage = multer.diskStorage({
 
-        let _result = {result: "error", msg: "No File Selected!"};
-        res.send(_result);
+        destination: function (req, file, callback) {
+            callback(null, upload_user_path());
+        },
 
-    } else {
+        filename: function (req, file, callback) {
 
-            /*UPDATE THE PROFILE PICTURE TO THE DATABASE*/
-            mysql_connection.query("UPDATE user_details SET profile_picture = ? WHERE user_id = ?", [avatar, session_id], function (err, rows) {
+            callback(null, newFileName = Date.now() + path.extname(file.originalname));
+
+            data.push([newFileName]);
+            console.log("DATA IS " + data);
+        }
+
+    });
+
+
+    let upload = multer({storage: storage}).any();
+
+    upload(req, res, function (err) {
+
+        if (err) {
+
+            return res.end("Error uploading file. " + err);
+
+        } else {
+
+            /**UNLINK THE OLD IMAGE IF ANY THEN ADD THE NEW IMAGE**/
+            /**CHECK IF THERE IS AN IMAGE IN THE DATABASE**/
+
+            let sql_select_query = "SELECT profile_picture FROM user_details WHERE user_id = ?";
+
+            mysql_connection.query(sql_select_query, [session_id], function (error, rows) {
+
+                if(error){
+                    // Render a custom error page here!!!
+                    // Log the error message or save it in a txt file
+                    console.log(error)
+                } else {
+
+                    for(let i = 0; i < rows.length; i++){
+
+                        let db_profile_picture = rows[i].profile_picture;
+
+                        fs.unlink('./public/users/' + session_username + '/profile_picture/' + db_profile_picture, function (err) {
+                            if (err) return console.log(err);
+                            console.log('file deleted successfully');
+                        });
+                    }
+
+                }
+
+            });
+
+            /**UPDATE THE PROFILE PICTURE TO THE DATABASE**/
+            mysql_connection.query("UPDATE user_details SET profile_picture = ? WHERE user_id = ?", [data, session_id], function (err, rows) {
                 if (err) {
                     res.send(err);
                 } else {
@@ -475,9 +536,9 @@ app.post('/upload', function (req, res) {
 
                         let success = {result: "success", id: session_id};
 
-                        res.send(success);
+                        //res.send(success);
 
-                        //res.redirect("/profile/" + session_id);
+                        res.redirect("/profile/" + session_id);
 
                     } else {
                         res.send(err);
@@ -485,18 +546,92 @@ app.post('/upload', function (req, res) {
 
                 }
             });
+
+
+        }
+    });
+});
+
+/** Upload Gallery Route **/
+
+app.post('/profile_upload_gallery', function (req, res) {
+
+// Create user folder
+    let dir = './public/users/' + session_username + '/gallery_pictures';
+
+    if (!fs.existsSync(dir)) {
+
+        fs.mkdirSync(dir);
     }
 
+    let newFileName;
+
+    let data = [];
+
+    let storage = multer.diskStorage({
+
+        destination: function (req, file, callback) {
+            callback(null, dir);
+        },
+
+        filename: function (req, file, callback) {
+
+            callback(null, newFileName = Date.now() + path.extname(file.originalname));
+
+            data.push([newFileName, session_id]);
+            console.log("DATA IS " + data);
+        }
+
+    });
 
 
+    let upload = multer({storage: storage}).any();
+
+    upload(req, res, function (err) {
+
+        if (err) {
+
+            return res.end("Error uploading file. " + err);
+
+        } else {
+
+            /**UPDATE THE PROFILE PICTURE TO THE DATABASE**/
+            mysql_connection.query("INSERT INTO photos (user_photos, user_id) VALUES ?", [data], function (err, rows) {
+                if (err) {
+                    res.send(err);
+                } else {
+
+                    if (rows.affectedRows > 0) {
+
+                        //let success = {result: "success", id: session_id};
+
+                        //res.send(success);
+
+                        res.redirect("/profile/" + session_id);
+
+                    } else {
+                        res.send(err);
+                    }
+
+                }
+            });
+
+
+        }
+    });
 
 });
+
+/** Grab user's gallery photos **/
+
+
+
 /*FUNCTION FOR UPLOADING PROFILE IMAGE*/
 
-/*function upload_user_path() {
+function upload_user_path() {
     return './public/users/' + session_username + '/profile_picture';
 
-}*/
+}
 
 
 

@@ -93,6 +93,14 @@
     height: 270px;
     display: none;
 }
+
+/** Profile Page Pictures tab **/
+
+
+#add_gallery_pictures_panel{
+    display: none;
+}
+
 /*ADD OR UPDATE BIO*/
 
 #add_update_bio_title{

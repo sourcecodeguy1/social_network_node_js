@@ -8,6 +8,8 @@
 
 <div class="container"><!--MAIN CONTAINER-->
 
+    <input class="collapse" id="settings_user_id" type="text" value="<%= u_id %>" hidden>
+
     <!--PROFILE PICTURE WRAPPER-->
     <div id="profile_picture_wrapper">
 
@@ -16,14 +18,20 @@
 
         <div><%= typeof msg !== 'undefined' ? msg : '' %></div>
 
-        <input id="hidden_profile_pic_id" type="hidden" value="<%= user_profile_picture.slice(21,57) %>" />
+        <div style="justify-content: center; align-items: center; display: flex">
+            <div id="drag-drop-area"></div>
+        </div>
+
+
+        <script src="../bundle.js"></script>
+       <!-- <input id="hidden_profile_pic_id" type="hidden" value="<//%= user_profile_picture.slice(21,57) %>" />
 
         <form id="frm_upload_profile_picture" action="/upload" method="post">
 
-            <p id="error_pic_upload_handler" class="alert-danger"></p><!--jQuery error handler-->
-            <p id="success_pic_upload_handler" style="background-color: #00AA88; color: white;"></p><!--jQuery success handler-->
+            <p id="error_pic_upload_handler" class="alert-danger"></p>&lt;!&ndash;jQuery error handler&ndash;&gt;
+            <p id="success_pic_upload_handler" style="background-color: #00AA88; color: white;"></p>&lt;!&ndash;jQuery success handler&ndash;&gt;
 
-            <!--<input type="file" name="file_upload" id="txt_file_upload"><br />-->
+            &lt;!&ndash;<input type="file" name="file_upload" id="txt_file_upload"><br />&ndash;&gt;
 
             <input type="hidden" name="UPLOADCARE_PUB_KEY" value="e9c52880a8af766d0549">
 
@@ -31,7 +39,7 @@
 
             <button id="btn_upload_profile_picture" type="button" class="btn btn-primary">Upload</button>
 
-        </form>
+        </form>-->
     </div>
 
     </div>
